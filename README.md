@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Website
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
@@ -43,4 +42,4 @@ If you are using GitHub pages for hosting, this command is a convenient way to b
 =======
 # uva-ai-in-healthcare
 University of Virginia's AI in Healthcare Elective for Medical Students
->>>>>>> f0557a9c327bda4602971fcb38ae211d465e4359
+
