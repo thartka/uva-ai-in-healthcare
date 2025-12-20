@@ -1,74 +1,49 @@
 // @ts-check
-// `@type` JSDoc annotations allow editor autocompletion and type checking
-// (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
-// See: https://docusaurus.io/docs/api/docusaurus-config
-
-import {themes as prismThemes} from 'prism-react-renderer';
-
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
+  title: "Data to Decisions: AI in Healthcare",
+  tagline: "Interactive, clinically grounded AI concepts for future physicians.",
+  favicon: "img/favicon.ico",
 
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    v4: true,
   },
 
-  // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  // Set this to your eventual production domain (Cloudflare Pages custom domain, etc.)
+  url: "https://your-domain.example.com",
+  baseUrl: "/",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  // If you deploy via GitHub/Cloudflare Pages, keep these accurate (not required for local dev).
+  organizationName: "uva-ai-in-healthcare", // your GitHub org/user
+  projectName: "uva-ai-in-healthcare", // your repo name
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          sidebarPath: require.resolve("./sidebars.js"),
+          routeBasePath: "docs",
+          // MVP: no "edit this page" links until your repo URL is stable.
+          editUrl: undefined,
+          showLastUpdateAuthor: false,
+          showLastUpdateTime: false,
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        // MVP: turn off blog entirely
+        blog: false,
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: require.resolve("./src/css/custom.css"),
         },
       }),
     ],
@@ -77,77 +52,43 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      // Optional social card; replace later if you want
+      image: "img/social-card.png",
+
       colorMode: {
         respectPrefersColorScheme: true,
       },
+
       navbar: {
-        title: 'My Site',
+        title: "Data to Decisions",
+        // If you want the UVA logo "front and center", keep it on the homepage hero.
+        // Navbar logo can be small; you can remove it to keep the header clean.
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: "University of Virginia",
+          src: "img/uva-swords.png",
         },
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Tutorial',
-          },
-          {to: '/blog', label: 'Blog', position: 'left'},
-          {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
-            position: 'right',
-          },
+          { to: "/docs/schedule", label: "Schedule", position: "left" },
+          { to: "/docs/lectures/intro", label: "Lectures", position: "left" },
+          // Add later if desired:
+          // { href: "https://github.com/<org>/<repo>", label: "GitHub", position: "right" },
         ],
       },
+
       footer: {
-        style: 'dark',
+        style: "dark",
         links: [
           {
-            title: 'Docs',
+            title: "Course",
             items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'X',
-                href: 'https://x.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
-              },
+              { label: "Schedule", to: "/docs/schedule" },
+              { label: "Lectures", to: "/docs/lectures/intro" },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} University of Virginia. Built with Docusaurus.`,
       },
+
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
