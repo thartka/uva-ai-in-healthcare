@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 /node_modules
 
@@ -18,3 +19,68 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+=======
+############################
+# OS / General
+############################
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+############################
+# Node / Docusaurus
+############################
+node_modules/
+build/
+.cache/
+.docusaurus/
+
+############################
+# Environment / Secrets
+############################
+.env
+.env.*
+*.key
+*.pem
+
+############################
+# R / RStudio
+############################
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+############################
+# Shiny
+############################
+rsconnect/
+
+############################
+# Python
+############################
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env/
+.venv/
+venv/
+
+############################
+# Jupyter
+############################
+.ipynb_checkpoints/
+
+############################
+# Quarto / R Markdown
+############################
+*_files/
+*_cache/
+
+############################
+# Logs
+############################
+*.log
+>>>>>>> f0557a9c327bda4602971fcb38ae211d465e4359
