@@ -5,7 +5,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 const config = {
   title: "Data to Decisions: AI in Healthcare",
   tagline: "Interactive, clinically grounded AI concepts for future physicians.",
-  favicon: "img/favicon.ico",
+  favicon: "img/uva-swords.png",
 
   future: {
     v4: true,
