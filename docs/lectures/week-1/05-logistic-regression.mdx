@@ -48,13 +48,36 @@ In healthcare, we often need to predict **binary outcomes**—events that either
 - Will this patient develop a complication?
 - Does this patient have a particular disease?
 
-These are fundamentally different from continuous outcomes like blood pressure or NEDOCS scores. We can't use linear regression for these because:
-- **Probabilities must be between 0 and 1**—but linear regression can produce values outside this range
-- **The relationship between predictors and probability is not linear**—doubling a risk factor doesn't double the probability
-
 ## Vizient Mortality Prediction: A Real-World Example
 
 **Vizient** is a healthcare performance improvement company that provides risk-adjusted mortality models to help hospitals benchmark their outcomes. These models use **logistic regression** to predict the probability of in-hospital mortality based on patient characteristics.
+
+<a 
+  href="https://knowledgeonthego.podbean.com/e/mortality-1750425379/" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  style={{
+    display: 'block',
+    textDecoration: 'none',
+    marginTop: '1rem',
+    marginBottom: '1.5rem'
+  }}
+>
+  <img 
+    src="/img/vizient-moratlity.png" 
+    alt="Vizient Mortality Podcast - Knowledge on the Go" 
+    style={{
+      width: '100%',
+      maxWidth: '600px',
+      height: 'auto',
+      display: 'block',
+      margin: '0 auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      cursor: 'pointer'
+    }}
+  />
+</a>
 
 Consider **gastrointestinal (GI) bleeding**—a common, serious condition that requires rapid assessment and intervention. Predicting mortality risk helps clinicians:
 - Identify high-risk patients who need intensive monitoring
@@ -84,6 +107,20 @@ Imagine trying to predict whether a patient with GI bleeding will die using line
 
 **Mortality = β₀ + β₁(Age) + β₂(Sepsis) + ...**
 
+<img 
+  src="/img/linear-regress-for-prob-problems.png" 
+  alt="Linear regression problems with probability predictions" 
+  style={{
+    width: '100%',
+    maxWidth: '800px',
+    height: 'auto',
+    display: 'block',
+    margin: '1.5rem auto',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+  }}
+/>
+
 But what does this produce? A **continuous number** that could be:
 - **Negative** (e.g., -0.3)—what does "negative mortality" mean?
 - **Greater than 1** (e.g., 1.5)—what does "150% mortality" mean?
@@ -92,15 +129,6 @@ These predictions are **meaningless** for binary outcomes. We need probabilities
 - **Bounded between 0 and 1**
 - **Interpretable** as the chance an event will occur
 
-### The Variance Problem
-
-Even if we could constrain linear regression predictions to [0,1], there's another issue: **non-constant variance**. 
-
-For binary outcomes:
-- When the true probability is near 0 or 1, there's very little variance (outcomes are mostly 0 or mostly 1)
-- When the true probability is near 0.5, there's maximum variance (outcomes are mixed)
-
-Linear regression assumes constant variance across all values, which doesn't hold for binary data.
 
 ### Visual Comparison
 
@@ -145,108 +173,6 @@ The logit can range from -∞ to +∞, making it perfect for linear modeling.
 
 ### The Logistic Regression Formula
 
-Logistic regression models the logit as a linear combination of predictors:
-
-**logit(p) = β₀ + β₁x₁ + β₂x₂ + β₃x₃ + ... + βₙxₙ**
-
-Then, to get the probability, we apply the **inverse logit** (logistic function):
-
-**p = 1 / (1 + exp(-logit(p)))**
-
-This transformation creates the characteristic **S-shaped curve** that:
-- Approaches 0 as logit → -∞
-- Approaches 1 as logit → +∞
-- Is steepest when p ≈ 0.5 (logit ≈ 0)
-
-### Vizient-like GI Bleed Mortality Model
-
-Here's an illustrative example of how a Vizient-like model might predict mortality in GI bleeding patients. This is a **simplified, educational example** (not the actual proprietary Vizient model):
-
-#### Predictor Variables
-
-The model includes the following patient characteristics:
-
-- **Age** (in years)
-- **Male** (1 = yes, 0 = no)
-- **Emergency admission** (1 = ED/urgent, 0 = elective)
-- **ICU first 24h** (1 = yes, 0 = no)
-- **Elixhauser comorbidity score** (integer, measures overall comorbidity burden)
-- **CHF_POA** - Congestive heart failure present-on-admission (1/0)
-- **CKD_POA** - Chronic kidney disease present-on-admission (1/0)
-- **Sepsis_POA** - Sepsis present-on-admission (1/0)
-- **Vent_24h** - Mechanical ventilation in first 24 hours (1/0)
-- **Creatinine_high** (1 if first creatinine ≥ 2.0 mg/dL, else 0)
-- **Lactate_high** (1 if first lactate ≥ 4 mmol/L, else 0)
-
-#### The Model Equation
-
-**logit(p) = -7.0**
-- **+ 0.055 × (Age)**
-- **+ 0.20 × (Male)**
-- **+ 0.60 × (Emergency)**
-- **+ 0.90 × (ICU_24h)**
-- **+ 0.08 × (ElixScore)**
-- **+ 0.70 × (CHF_POA)**
-- **+ 0.55 × (CKD_POA)**
-- **+ 1.10 × (Sepsis_POA)**
-- **+ 1.40 × (Vent_24h)**
-- **+ 0.65 × (Creatinine_high)**
-- **+ 0.85 × (Lactate_high)**
-
-Then convert to probability:
-
-**p = 1 / (1 + exp(-logit(p)))**
-
-### Worked Example
-
-Let's calculate the mortality probability for a patient:
-
-- **Age**: 75 years
-- **Male**: Yes (1)
-- **Emergency admission**: Yes (1)
-- **ICU first 24h**: No (0)
-- **Elixhauser score**: 8
-- **CHF_POA**: Yes (1)
-- **CKD_POA**: No (0)
-- **Sepsis_POA**: Yes (1)
-- **Vent_24h**: No (0)
-- **Creatinine_high**: Yes (1)
-- **Lactate_high**: No (0)
-
-**Step 1: Calculate logit(p)**
-```
-logit(p) = -7.0 
-         + 0.055 × 75 
-         + 0.20 × 1 
-         + 0.60 × 1 
-         + 0.90 × 0 
-         + 0.08 × 8 
-         + 0.70 × 1 
-         + 0.55 × 0 
-         + 1.10 × 1 
-         + 1.40 × 0 
-         + 0.65 × 1 
-         + 0.85 × 0
-
-logit(p) = -7.0 + 4.125 + 0.20 + 0.60 + 0 + 0.64 + 0.70 + 0 + 1.10 + 0 + 0.65 + 0
-logit(p) = 1.015
-```
-
-**Step 2: Convert to probability**
-```
-p = 1 / (1 + exp(-1.015))
-p = 1 / (1 + exp(-1.015))
-p = 1 / (1 + 0.362)
-p = 1 / 1.362
-p = 0.734
-```
-
-**Result**: This patient has approximately a **73.4% predicted probability of in-hospital mortality**, indicating very high risk requiring intensive monitoring and aggressive intervention.
-
----
-
-## 3. Understanding the Link Function
-
 The transformation from linear log-odds to S-shaped probabilities is the heart of logistic regression. Let's explore this visually:
 
 ::::success ✋ Hands-on Activity: The Logit Link Function
@@ -271,6 +197,71 @@ import LogisticRegressionDemo from '@site/src/components/widgets/logistic-regres
 
 ---
 
+
+
+This transformation creates the characteristic **S-shaped curve** that:
+- Approaches 0 as logit → -∞
+- Approaches 1 as logit → +∞
+- Is steepest when p ≈ 0.5 (logit ≈ 0)
+
+## 3.  Vizient-like GI Bleed Mortality Model
+
+Here's an illustrative example of how a Vizient-like model might predict mortality in GI bleeding patients. This is a **simplified, educational example** (not the actual proprietary Vizient model):
+
+#### The Model Equation
+
+The model predicts mortality probability using logistic regression with the following equation:
+
+**logit(p) = -7.0**
+- **+ 0.055 × (Age)**
+- **+ 0.20 × (Male)**
+- **+ 0.60 × (Emergency)**
+- **+ 0.90 × (ICU_24h)**
+- **+ 0.08 × (ElixScore)**
+- **+ 0.70 × (CHF_POA)**
+- **+ 0.55 × (CKD_POA)**
+- **+ 1.10 × (Sepsis_POA)**
+- **+ 1.40 × (Vent_24h)**
+- **+ 0.65 × (Creatinine_high)**
+- **+ 0.85 × (Lactate_high)**
+
+Then convert to probability:
+
+**p = 1 / (1 + exp(-logit(p)))**
+
+::::success ✋ Hands-on Activity: Interactive Mortality Calculator
+
+Explore how patient characteristics affect predicted mortality risk using this interactive calculator. Adjust the patient characteristics on the left to see how the model calculates:
+
+1. The **logit** value (log-odds)
+2. The **predicted mortality probability** (as a percentage)
+3. The **contribution of each predictor** to the final risk estimate
+
+import GIBleedMortalityCalculator from '@site/src/components/widgets/gibleed-mortality-calculator';
+
+<GIBleedMortalityCalculator />
+
+**Model Predictors:**
+- **Age** (in years)
+- **Male** (1 = yes, 0 = no)
+- **Emergency admission** (1 = ED/urgent, 0 = elective)
+- **ICU first 24h** (1 = yes, 0 = no)
+- **Elixhauser comorbidity score** (integer, measures overall comorbidity burden)
+- **CHF_POA** - Congestive heart failure present-on-admission (1/0)
+- **CKD_POA** - Chronic kidney disease present-on-admission (1/0)
+- **Sepsis_POA** - Sepsis present-on-admission (1/0)
+- **Vent_24h** - Mechanical ventilation in first 24 hours (1/0)
+- **Creatinine_high** (1 if first creatinine ≥ 2.0 mg/dL, else 0)
+- **Lactate_high** (1 if first lactate ≥ 4 mmol/L, else 0)
+
+::::
+
+---
+
+
+
+
+
 ## 4. Interpreting Coefficients as Odds Ratios
 
 ### What Do Coefficients Mean?
@@ -287,30 +278,17 @@ The odds ratio tells us: **"How many times more likely is the outcome when the p
 
 Let's interpret some coefficients from our GI bleed mortality model:
 
-#### Coefficient: 1.40 for Vent_24h
-- **Odds Ratio**: exp(1.40) = 4.06
-- **Meaning**: Patients requiring mechanical ventilation in the first 24 hours have **4.06 times higher odds** of mortality compared to those who don't
-- **Clinical interpretation**: Mechanical ventilation is a strong marker of critical illness and respiratory failure, significantly increasing mortality risk
+#### Coefficient: 0.055 for Age
+- **Odds Ratio per year**: exp(0.055) = 1.057
+- **Meaning**: Each additional year of age increases the odds of mortality by **5.7%** (or multiplies odds by 1.057)
+- **Clinical interpretation**: Age is a continuous risk factor—older patients have incrementally higher risk, with the effect compounding over decades
 
 #### Coefficient: 1.10 for Sepsis_POA
 - **Odds Ratio**: exp(1.10) = 3.00
 - **Meaning**: Patients with sepsis present-on-admission have **3.00 times higher odds** of mortality
 - **Clinical interpretation**: Sepsis is a life-threatening condition that substantially increases mortality risk in GI bleeding patients
 
-#### Coefficient: 0.055 for Age
-- **Odds Ratio per year**: exp(0.055) = 1.057
-- **Meaning**: Each additional year of age increases the odds of mortality by **5.7%** (or multiplies odds by 1.057)
-- **Clinical interpretation**: Age is a continuous risk factor—older patients have incrementally higher risk, with the effect compounding over decades
 
-#### Coefficient: 0.90 for ICU_24h
-- **Odds Ratio**: exp(0.90) = 2.46
-- **Meaning**: ICU admission in the first 24 hours increases mortality odds by **2.46 times**
-- **Clinical interpretation**: ICU admission reflects severe illness requiring intensive monitoring and support
-
-#### Coefficient: 0.85 for Lactate_high
-- **Odds Ratio**: exp(0.85) = 2.34
-- **Meaning**: Elevated lactate (≥4 mmol/L) increases mortality odds by **2.34 times**
-- **Clinical interpretation**: High lactate indicates tissue hypoperfusion and anaerobic metabolism, a marker of shock and poor prognosis
 
 ### Important Notes on Interpretation
 

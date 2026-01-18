@@ -17,7 +17,7 @@ const RegressionComparison = () => {
     for (let i = 0; i < 30; i++) {
       const x = Math.random() * 20;
       const noise = (Math.random() - 0.5) * 15;
-      const y = 50 + 0.6 * x + noise;
+      const y = 40 + 1.5 * x + noise;
       linear.push({ x, y });
     }
     linear.sort((a, b) => a.x - b.x);
@@ -26,7 +26,7 @@ const RegressionComparison = () => {
     const logistic = [];
     for (let i = 0; i < 50; i++) {
       const x = Math.random() * 20;
-      const prob = 1 / (1 + Math.exp(-0.2 * (x - 15)));
+      const prob = 1 / (1 + Math.exp(-0.3 * (x - 10)));
       const outcome = Math.random() < prob ? 1 : 0;
       logistic.push({ x, y: outcome });
     }
@@ -35,13 +35,13 @@ const RegressionComparison = () => {
     // Linear regression line
     const linearLineData = [];
     for (let x = 0; x <= 20; x += 1) {
-      linearLineData.push({ x, y: 50 + 0.6 * x });
+      linearLineData.push({ x, y: 40 + 1.5 * x });
     }
 
     // Logistic regression curve
     const logisticCurveData = [];
     for (let x = 0; x <= 20; x += 0.5) {
-      const prob = 1 / (1 + Math.exp(-0.2 * (x - 15)));
+      const prob = 1 / (1 + Math.exp(-0.3 * (x - 10)));
       logisticCurveData.push({ x, y: prob });
     }
 
@@ -54,8 +54,9 @@ const RegressionComparison = () => {
   }, []);
 
   // Calculate predictions for current dose
-  const mapPrediction = 50 + 0.6 * dose;
-  const probability = 1 / (1 + Math.exp(-0.2 * (dose - 15)));
+  const mapPrediction = 40 + 1.5 * dose;
+  // Logistic regression for P(MAP > 55), centered around x = 10 (where MAP = 55 in linear model)
+  const probability = 1 / (1 + Math.exp(-0.3 * (dose - 10)));
 
   // Linear regression plot data
   const linearPlotData = [
@@ -92,7 +93,7 @@ const RegressionComparison = () => {
       y: logisticData.map(d => d.y),
       type: 'scatter',
       mode: 'markers',
-      name: 'MAP > 65 (Yes=1, No=0)',
+      name: 'MAP > 55 (Yes=1, No=0)',
       marker: { color: 'rgba(33, 150, 243, 0.6)', size: 8 }
     },
     {
@@ -100,7 +101,7 @@ const RegressionComparison = () => {
       y: logisticCurve.map(d => d.y),
       type: 'scatter',
       mode: 'lines',
-      name: 'Logistic Curve: P(MAP>65)',
+      name: 'Logistic Curve: P(MAP>55)',
       line: { color: 'rgb(255, 99, 132)', width: 3 }
     },
     {
@@ -138,7 +139,7 @@ const RegressionComparison = () => {
       range: [0, 20]
     },
     yaxis: {
-      title: 'Probability MAP > 60',
+      title: 'Probability MAP > 55',
       range: [-0.05, 1.05],
       tickmode: 'linear',
       tick0: 0,
@@ -272,7 +273,7 @@ const RegressionComparison = () => {
               fontSize: '1rem',
               color: '#666'
             }}>
-              P(MAP {'>'} 60): <strong style={{ color: '#2196F3' }}>{(probability * 100).toFixed(1)}%</strong>
+              P(MAP {'>'} 55): <strong style={{ color: '#2196F3' }}>{(probability * 100).toFixed(1)}%</strong>
             </div>
           </div>
         </div>
