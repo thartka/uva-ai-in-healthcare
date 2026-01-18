@@ -108,7 +108,7 @@ const RegressionComparison = () => {
   ];
 
   const linearLayout = {
-    width: 500,
+    width: 700,
     height: 400,
     title: 'Linear Regression',
     xaxis: {
@@ -124,7 +124,7 @@ const RegressionComparison = () => {
   };
 
   const logisticLayout = {
-    width: 500,
+    width: 700,
     height: 400,
     title: 'Logistic Regression',
     xaxis: {
@@ -157,51 +157,10 @@ const RegressionComparison = () => {
         boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
       }}>
         <div style={{
-          margin: '1.5rem 0',
-          textAlign: 'center'
-        }}>
-          <label htmlFor="doseSlider" style={{
-            display: 'block',
-            marginBottom: '0.5rem',
-            fontWeight: 'bold',
-            color: '#555',
-            fontSize: '1rem'
-          }}>
-            Norepinephrine Dose (mcg/min):
-            <span style={{
-              display: 'inline-block',
-              marginLeft: '15px',
-              fontSize: '1.125rem',
-              color: '#2196F3',
-              fontWeight: 'bold'
-            }}>
-              {dose}
-            </span>
-          </label>
-          <input
-            id="doseSlider"
-            type="range"
-            min="0"
-            max="20"
-            value={dose}
-            step="0.5"
-            onChange={(e) => setDose(parseFloat(e.target.value))}
-            style={{
-              width: '80%',
-              height: '8px',
-              background: '#ddd',
-              borderRadius: '5px',
-              outline: 'none',
-              cursor: 'pointer'
-            }}
-          />
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          display: 'flex',
+          flexDirection: 'column',
           gap: '2rem',
-          marginTop: '2rem'
+          marginTop: '1rem'
         }}>
           {/* Linear Regression Chart */}
           <div style={{
@@ -234,6 +193,48 @@ const RegressionComparison = () => {
             </div>
           </div>
 
+          {/* Dose Slider */}
+          <div style={{
+            margin: '1rem 0',
+            textAlign: 'center'
+          }}>
+            <label htmlFor="doseSlider" style={{
+              display: 'block',
+              marginBottom: '0.5rem',
+              fontWeight: 'bold',
+              color: '#555',
+              fontSize: '1rem'
+            }}>
+              Norepinephrine Dose (mcg/min):
+              <span style={{
+                display: 'inline-block',
+                marginLeft: '15px',
+                fontSize: '1.125rem',
+                color: '#2196F3',
+                fontWeight: 'bold'
+              }}>
+                {dose}
+              </span>
+            </label>
+            <input
+              id="doseSlider"
+              type="range"
+              min="0"
+              max="20"
+              value={dose}
+              step="0.5"
+              onChange={(e) => setDose(parseFloat(e.target.value))}
+              style={{
+                width: '80%',
+                height: '8px',
+                background: '#ddd',
+                borderRadius: '5px',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            />
+          </div>
+
           {/* Logistic Regression Chart */}
           <div style={{
             backgroundColor: '#fafafa',
@@ -261,7 +262,7 @@ const RegressionComparison = () => {
               fontSize: '1rem',
               color: '#666'
             }}>
-              P(MAP > 60): <strong style={{ color: '#2196F3' }}>{(probability * 100).toFixed(1)}%</strong>
+              P(MAP {'>'} 60): <strong style={{ color: '#2196F3' }}>{(probability * 100).toFixed(1)}%</strong>
             </div>
           </div>
         </div>
