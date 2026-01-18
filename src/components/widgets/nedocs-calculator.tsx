@@ -6,20 +6,20 @@ export default function NEDOCSCalculator() {
   const [totalPatients, setTotalPatients] = useState(30);
   const [edBeds, setEdBeds] = useState(20);
   const [hospitalBeds, setHospitalBeds] = useState(200);
-  const [admittedPatients, setAdmittedPatients] = useState(8);
-  const [ventilatorsInUse, setVentilators] = useState(2);
-  const [longestAdmitTime, setLongestAdmitTime] = useState(4);
+  const [admits, setAdmits] = useState(8);
+  const [ventilatorPatients, setVentilatorPatients] = useState(2);
+  const [waitTimeToBed, setWaitTimeToBed] = useState(2);
+  const [longestAdmitWait, setLongestAdmitWait] = useState(4);
   
-  // Simplified NEDOCS calculation (educational version)
-  // Actual formula is more complex, this is for demonstration
+  // NEDOCS calculation using the official formula
   const calculateNEDOCS = () => {
-    const occupancyRate = (totalPatients / edBeds) * 85;
-    const admittedPatientLoad = (admittedPatients / edBeds) * 40;
-    const ventilatorLoad = (ventilatorsInUse / edBeds) * 30;
-    const waitTimeComponent = (longestAdmitTime / 10) * 25;
-    const hospitalCapacity = (admittedPatients / hospitalBeds) * 20;
+    const term1 = (totalPatients / edBeds) * 85.8;
+    const term2 = (admits / hospitalBeds) * 600;
+    const term3 = waitTimeToBed * 5.64;
+    const term4 = longestAdmitWait * 0.93;
+    const term5 = ventilatorPatients * 13.4;
     
-    return Math.round(occupancyRate + admittedPatientLoad + ventilatorLoad + waitTimeComponent + hospitalCapacity);
+    return Math.round(term1 + term2 + term3 + term4 + term5);
   };
   
   const nedocsScore = calculateNEDOCS();
@@ -39,8 +39,12 @@ export default function NEDOCSCalculator() {
   const generateTrendData = () => {
     const data = [];
     for (let patients = 0; patients <= 150; patients += 5) {
-      const tempOccupancy = (patients / edBeds) * 85;
-      const tempScore = Math.round(tempOccupancy + (admittedPatients / edBeds) * 40 + (ventilatorsInUse / edBeds) * 30 + (longestAdmitTime / 10) * 25 + (admittedPatients / hospitalBeds) * 20);
+      const term1 = (patients / edBeds) * 85.8;
+      const term2 = (admits / hospitalBeds) * 600;
+      const term3 = waitTimeToBed * 5.64;
+      const term4 = longestAdmitWait * 0.93;
+      const term5 = ventilatorPatients * 13.4;
+      const tempScore = Math.round(term1 + term2 + term3 + term4 + term5);
       data.push({
         patients,
         nedocs: tempScore,
@@ -96,47 +100,64 @@ export default function NEDOCSCalculator() {
               />
             </div>
 
-            {/* Admitted Patients */}
+            {/* Admits */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Admitted Patients Boarding: <span className="text-blue-600 font-bold">{admittedPatients}</span>
+                Admits (Boarders): <span className="text-blue-600 font-bold">{admits}</span>
               </label>
               <input
                 type="range"
                 min="0"
                 max="60"
-                value={admittedPatients}
-                onChange={(e) => setAdmittedPatients(Number(e.target.value))}
+                value={admits}
+                onChange={(e) => setAdmits(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
             </div>
 
-            {/* Ventilators */}
+            {/* Ventilator Patients */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ventilators in Use: <span className="text-blue-600 font-bold">{ventilatorsInUse}</span>
+                Ventilator Patients: <span className="text-blue-600 font-bold">{ventilatorPatients}</span>
               </label>
               <input
                 type="range"
                 min="0"
                 max="8"
-                value={ventilatorsInUse}
-                onChange={(e) => setVentilators(Number(e.target.value))}
+                value={ventilatorPatients}
+                onChange={(e) => setVentilatorPatients(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
             </div>
 
-            {/* Longest Admit Time */}
+            {/* Wait Time to Bed */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Longest Admit Wait Time: <span className="text-blue-600 font-bold">{longestAdmitTime} hours</span>
+                Wait Time to Bed: <span className="text-blue-600 font-bold">{waitTimeToBed} hours</span>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="12"
+                step="0.5"
+                value={waitTimeToBed}
+                onChange={(e) => setWaitTimeToBed(Number(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+
+            {/* Longest Admit Wait */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Longest Admit Wait: <span className="text-blue-600 font-bold">{longestAdmitWait} hours</span>
               </label>
               <input
                 type="range"
                 min="0"
                 max="24"
-                value={longestAdmitTime}
-                onChange={(e) => setLongestAdmitTime(Number(e.target.value))}
+                step="0.5"
+                value={longestAdmitWait}
+                onChange={(e) => setLongestAdmitWait(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
             </div>
@@ -165,24 +186,6 @@ export default function NEDOCSCalculator() {
               <p className={`text-lg font-semibold ${crowdingStatus.color}`}>
                 {crowdingStatus.level}
               </p>
-            </div>
-          </div>
-
-          {/* Formula Display */}
-          <div className="bg-gray-50 p-3 rounded-lg text-xs overflow-x-auto">
-            <h4 className="font-semibold text-gray-700 mb-2">Complete Linear Regression Equation:</h4>
-            <div className="bg-white p-2 rounded border border-gray-300 mb-2 overflow-x-auto">
-              <p className="font-mono text-xs break-all">
-                NEDOCS = 85×(TP/EDB) + 40×(AP/EDB) + 30×(V/EDB) + 25×(WT/10) + 20×(AP/HB)
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                TP=Total Patients, EDB=ED Beds, AP=Admitted Patients, V=Ventilators, WT=Wait Time, HB=Hospital Beds
-              </p>
-            </div>
-            <h4 className="font-semibold text-gray-700 mb-1">Current Calculation:</h4>
-            <div className="space-y-1 text-gray-600 font-mono overflow-x-auto">
-              <p className="break-all">= {Math.round((totalPatients/edBeds) * 85)} + {Math.round((admittedPatients/edBeds) * 40)} + {Math.round((ventilatorsInUse/edBeds) * 30)} + {Math.round((longestAdmitTime/10) * 25)} + {Math.round((admittedPatients/hospitalBeds) * 20)}</p>
-              <p className="pt-1 border-t border-gray-300 font-bold text-sm">= {nedocsScore}</p>
             </div>
           </div>
         </div>
@@ -233,6 +236,24 @@ export default function NEDOCSCalculator() {
             <p className="text-xs text-gray-600 mt-2 text-center">
               Red dot shows current configuration
             </p>
+          </div>
+
+          {/* Formula Display */}
+          <div className="bg-gray-50 p-3 rounded-lg text-xs overflow-x-auto">
+            <h4 className="font-semibold text-gray-700 mb-2">Complete Linear Regression Equation:</h4>
+            <div className="bg-white p-2 rounded border border-gray-300 mb-2 overflow-x-auto">
+              <p className="font-mono text-xs break-all">
+                NEDOCS = 85.8×(TP/EDB) + 600×(A/HB) + 5.64×(WTB) + 0.93×(LAW) + 13.4×(VP)
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                TP=Total ED Patients, EDB=ED Beds, A=Admits, HB=Hospital Beds, WTB=Wait Time to Bed, LAW=Longest Admit Wait, VP=Ventilator Patients
+              </p>
+            </div>
+            <h4 className="font-semibold text-gray-700 mb-1">Current Calculation:</h4>
+            <div className="space-y-1 text-gray-600 font-mono overflow-x-auto">
+              <p className="break-all">= {((totalPatients/edBeds) * 85.8).toFixed(1)} + {((admits/hospitalBeds) * 600).toFixed(1)} + {(waitTimeToBed * 5.64).toFixed(1)} + {(longestAdmitWait * 0.93).toFixed(1)} + {(ventilatorPatients * 13.4).toFixed(1)}</p>
+              <p className="pt-1 border-t border-gray-300 font-bold text-sm">= {nedocsScore}</p>
+            </div>
           </div>
 
           {/* Learning Points */}

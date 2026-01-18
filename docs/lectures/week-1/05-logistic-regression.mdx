@@ -1,0 +1,410 @@
+---
+sidebar_position: 5
+title: "Lecture 1.1.5 – Logistic Regression"
+---
+
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  marginBottom: '2rem',
+  paddingBottom: '1.5rem',
+  borderBottom: '1px solid rgba(35, 45, 75, 0.1)'
+}}>
+  <img 
+    src="/img/AI%20in%20Healthcare-logo.png" 
+    alt="AI in Healthcare Logo" 
+    style={{
+      height: '60px',
+      width: 'auto'
+    }}
+  />
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column'
+  }}>
+    <span style={{
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      letterSpacing: '0.05em',
+      color: '#E57200',
+      marginBottom: '0.25rem'
+    }}>R2795</span>
+    <span style={{
+      fontSize: '1.25rem',
+      fontWeight: 400,
+      color: '#232D4B',
+      lineHeight: '1.3'
+    }}>Data to Decisions: Introduction to AI in Healthcare</span>
+  </div>
+</div>
+
+# Lecture 1.1.5 – Logistic Regression
+
+## The Problem: Predicting Mortality in Healthcare
+
+In healthcare, we often need to predict **binary outcomes**—events that either happen or don't happen:
+- Will this patient survive their hospital stay?
+- Will this patient develop a complication?
+- Does this patient have a particular disease?
+
+These are fundamentally different from continuous outcomes like blood pressure or NEDOCS scores. We can't use linear regression for these because:
+- **Probabilities must be between 0 and 1**—but linear regression can produce values outside this range
+- **The relationship between predictors and probability is not linear**—doubling a risk factor doesn't double the probability
+
+## Vizient Mortality Prediction: A Real-World Example
+
+**Vizient** is a healthcare performance improvement company that provides risk-adjusted mortality models to help hospitals benchmark their outcomes. These models use **logistic regression** to predict the probability of in-hospital mortality based on patient characteristics.
+
+Consider **gastrointestinal (GI) bleeding**—a common, serious condition that requires rapid assessment and intervention. Predicting mortality risk helps clinicians:
+- Identify high-risk patients who need intensive monitoring
+- Guide resource allocation decisions
+- Compare outcomes across hospitals after adjusting for patient risk
+- Support shared decision-making with patients and families
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+1. **Explain why linear regression fails for binary outcomes** - Understand the fundamental limitations of linear regression when predicting probabilities and binary events, including the problem of predictions outside the [0,1] range
+
+2. **Understand the logistic regression model and link function** - Describe how logistic regression transforms a linear combination of predictors into probabilities using the logit link function, creating an S-shaped curve that ensures probabilities stay between 0 and 1
+
+3. **Interpret logistic regression coefficients as odds ratios** - Explain what coefficients in a logistic regression model mean in clinical context, understanding how each predictor affects the odds (and probability) of the outcome, using the Vizient-like GI bleed mortality model as an example
+
+4. **Recognize the advantages and limitations of logistic regression** - Identify strengths (handles binary outcomes, interpretable odds ratios, well-calibrated probabilities) and limitations (assumes linearity in log-odds, requires adequate sample size, sensitive to class imbalance) when applied to healthcare prediction problems
+
+---
+
+## 1. Why Linear Regression Fails for Binary Outcomes
+
+### The Problem with Continuous Predictions
+
+Imagine trying to predict whether a patient with GI bleeding will die using linear regression. We might model:
+
+**Mortality = β₀ + β₁(Age) + β₂(Sepsis) + ...**
+
+But what does this produce? A **continuous number** that could be:
+- **Negative** (e.g., -0.3)—what does "negative mortality" mean?
+- **Greater than 1** (e.g., 1.5)—what does "150% mortality" mean?
+
+These predictions are **meaningless** for binary outcomes. We need probabilities that are:
+- **Bounded between 0 and 1**
+- **Interpretable** as the chance an event will occur
+
+### The Variance Problem
+
+Even if we could constrain linear regression predictions to [0,1], there's another issue: **non-constant variance**. 
+
+For binary outcomes:
+- When the true probability is near 0 or 1, there's very little variance (outcomes are mostly 0 or mostly 1)
+- When the true probability is near 0.5, there's maximum variance (outcomes are mixed)
+
+Linear regression assumes constant variance across all values, which doesn't hold for binary data.
+
+### Visual Comparison
+
+::::success ✋ Hands-on Activity: Linear vs Logistic Regression
+
+Let's see how linear and logistic regression differ when predicting binary outcomes:
+
+import RegressionComparison from '@site/src/components/widgets/regression-comparison';
+
+<RegressionComparison />
+
+::::
+
+Notice how:
+- **Linear regression** can produce predictions outside [0,1] and doesn't capture the S-shaped relationship
+- **Logistic regression** produces probabilities bounded between 0 and 1, with a natural S-curve that reflects how risk changes with predictor values
+
+---
+
+## 2. Logistic Regression: The Model
+
+### The Core Idea
+
+**Logistic regression** solves the binary outcome problem by:
+1. Modeling the **log-odds** (logit) of the outcome as a linear function of predictors
+2. Transforming the log-odds back to probabilities using the **logistic function**
+
+This ensures probabilities always stay between 0 and 1, while still allowing us to use a linear combination of predictors.
+
+### The Logit Link Function
+
+The **logit** (log-odds) is defined as:
+
+**logit(p) = ln(p / (1-p))**
+
+Where:
+- **p** = probability of the outcome (e.g., mortality)
+- **p / (1-p)** = the **odds** of the outcome
+- **ln(odds)** = the **log-odds** or **logit**
+
+The logit can range from -∞ to +∞, making it perfect for linear modeling.
+
+### The Logistic Regression Formula
+
+Logistic regression models the logit as a linear combination of predictors:
+
+**logit(p) = β₀ + β₁x₁ + β₂x₂ + β₃x₃ + ... + βₙxₙ**
+
+Then, to get the probability, we apply the **inverse logit** (logistic function):
+
+**p = 1 / (1 + exp(-logit(p)))**
+
+This transformation creates the characteristic **S-shaped curve** that:
+- Approaches 0 as logit → -∞
+- Approaches 1 as logit → +∞
+- Is steepest when p ≈ 0.5 (logit ≈ 0)
+
+### Vizient-like GI Bleed Mortality Model
+
+Here's an illustrative example of how a Vizient-like model might predict mortality in GI bleeding patients. This is a **simplified, educational example** (not the actual proprietary Vizient model):
+
+#### Predictor Variables
+
+The model includes the following patient characteristics:
+
+- **Age** (in years)
+- **Male** (1 = yes, 0 = no)
+- **Emergency admission** (1 = ED/urgent, 0 = elective)
+- **ICU first 24h** (1 = yes, 0 = no)
+- **Elixhauser comorbidity score** (integer, measures overall comorbidity burden)
+- **CHF_POA** - Congestive heart failure present-on-admission (1/0)
+- **CKD_POA** - Chronic kidney disease present-on-admission (1/0)
+- **Sepsis_POA** - Sepsis present-on-admission (1/0)
+- **Vent_24h** - Mechanical ventilation in first 24 hours (1/0)
+- **Creatinine_high** (1 if first creatinine ≥ 2.0 mg/dL, else 0)
+- **Lactate_high** (1 if first lactate ≥ 4 mmol/L, else 0)
+
+#### The Model Equation
+
+**logit(p) = -7.0**
+- **+ 0.055 × (Age)**
+- **+ 0.20 × (Male)**
+- **+ 0.60 × (Emergency)**
+- **+ 0.90 × (ICU_24h)**
+- **+ 0.08 × (ElixScore)**
+- **+ 0.70 × (CHF_POA)**
+- **+ 0.55 × (CKD_POA)**
+- **+ 1.10 × (Sepsis_POA)**
+- **+ 1.40 × (Vent_24h)**
+- **+ 0.65 × (Creatinine_high)**
+- **+ 0.85 × (Lactate_high)**
+
+Then convert to probability:
+
+**p = 1 / (1 + exp(-logit(p)))**
+
+### Worked Example
+
+Let's calculate the mortality probability for a patient:
+
+- **Age**: 75 years
+- **Male**: Yes (1)
+- **Emergency admission**: Yes (1)
+- **ICU first 24h**: No (0)
+- **Elixhauser score**: 8
+- **CHF_POA**: Yes (1)
+- **CKD_POA**: No (0)
+- **Sepsis_POA**: Yes (1)
+- **Vent_24h**: No (0)
+- **Creatinine_high**: Yes (1)
+- **Lactate_high**: No (0)
+
+**Step 1: Calculate logit(p)**
+```
+logit(p) = -7.0 
+         + 0.055 × 75 
+         + 0.20 × 1 
+         + 0.60 × 1 
+         + 0.90 × 0 
+         + 0.08 × 8 
+         + 0.70 × 1 
+         + 0.55 × 0 
+         + 1.10 × 1 
+         + 1.40 × 0 
+         + 0.65 × 1 
+         + 0.85 × 0
+
+logit(p) = -7.0 + 4.125 + 0.20 + 0.60 + 0 + 0.64 + 0.70 + 0 + 1.10 + 0 + 0.65 + 0
+logit(p) = 1.015
+```
+
+**Step 2: Convert to probability**
+```
+p = 1 / (1 + exp(-1.015))
+p = 1 / (1 + exp(-1.015))
+p = 1 / (1 + 0.362)
+p = 1 / 1.362
+p = 0.734
+```
+
+**Result**: This patient has approximately a **73.4% predicted probability of in-hospital mortality**, indicating very high risk requiring intensive monitoring and aggressive intervention.
+
+---
+
+## 3. Understanding the Link Function
+
+The transformation from linear log-odds to S-shaped probabilities is the heart of logistic regression. Let's explore this visually:
+
+::::success ✋ Hands-on Activity: The Logit Link Function
+
+Watch how a linear relationship in log-odds space becomes an S-curve in probability space:
+
+import LogisticRegressionDemo from '@site/src/components/widgets/logistic-regression-link-demo';
+
+<LogisticRegressionDemo />
+
+::::
+
+### Key Insights
+
+1. **Linear in log-odds**: The relationship between predictors and log-odds is linear—each unit increase in a predictor adds a fixed amount to the log-odds
+
+2. **Non-linear in probability**: The same relationship becomes S-shaped in probability space—the effect of a predictor depends on where you are on the curve
+
+3. **Diminishing returns**: As probability approaches 0 or 1, the same change in log-odds produces smaller changes in probability. This reflects real-world risk: going from 1% to 2% risk (doubling) feels different than going from 50% to 51% risk
+
+4. **Steepest at p = 0.5**: The curve is steepest when probability is near 0.5, meaning predictors have the largest effect on probability in the middle range
+
+---
+
+## 4. Interpreting Coefficients as Odds Ratios
+
+### What Do Coefficients Mean?
+
+In logistic regression, coefficients tell us how predictors affect the **log-odds** of the outcome. But it's often more intuitive to think in terms of **odds ratios**.
+
+### Converting Coefficients to Odds Ratios
+
+For a coefficient β, the **odds ratio** is: **OR = exp(β)**
+
+The odds ratio tells us: **"How many times more likely is the outcome when the predictor increases by 1 unit (or is present vs. absent)?"**
+
+### Interpreting the Vizient-like Model Coefficients
+
+Let's interpret some coefficients from our GI bleed mortality model:
+
+#### Coefficient: 1.40 for Vent_24h
+- **Odds Ratio**: exp(1.40) = 4.06
+- **Meaning**: Patients requiring mechanical ventilation in the first 24 hours have **4.06 times higher odds** of mortality compared to those who don't
+- **Clinical interpretation**: Mechanical ventilation is a strong marker of critical illness and respiratory failure, significantly increasing mortality risk
+
+#### Coefficient: 1.10 for Sepsis_POA
+- **Odds Ratio**: exp(1.10) = 3.00
+- **Meaning**: Patients with sepsis present-on-admission have **3.00 times higher odds** of mortality
+- **Clinical interpretation**: Sepsis is a life-threatening condition that substantially increases mortality risk in GI bleeding patients
+
+#### Coefficient: 0.055 for Age
+- **Odds Ratio per year**: exp(0.055) = 1.057
+- **Meaning**: Each additional year of age increases the odds of mortality by **5.7%** (or multiplies odds by 1.057)
+- **Clinical interpretation**: Age is a continuous risk factor—older patients have incrementally higher risk, with the effect compounding over decades
+
+#### Coefficient: 0.90 for ICU_24h
+- **Odds Ratio**: exp(0.90) = 2.46
+- **Meaning**: ICU admission in the first 24 hours increases mortality odds by **2.46 times**
+- **Clinical interpretation**: ICU admission reflects severe illness requiring intensive monitoring and support
+
+#### Coefficient: 0.85 for Lactate_high
+- **Odds Ratio**: exp(0.85) = 2.34
+- **Meaning**: Elevated lactate (≥4 mmol/L) increases mortality odds by **2.34 times**
+- **Clinical interpretation**: High lactate indicates tissue hypoperfusion and anaerobic metabolism, a marker of shock and poor prognosis
+
+### Important Notes on Interpretation
+
+1. **Odds vs. Probability**: Odds ratios describe relative changes in odds, not probabilities. A 2x increase in odds doesn't mean a 2x increase in probability (the relationship is non-linear)
+
+2. **Holding other variables constant**: Like in linear regression, each coefficient represents the effect of that predictor **while holding all other predictors constant**
+
+3. **Interaction effects**: The model assumes predictors act independently. In reality, some combinations (e.g., sepsis + mechanical ventilation) might have synergistic effects not captured by simple additive terms
+
+---
+
+## 5. Advantages and Limitations of Logistic Regression
+
+### Assumptions of Logistic Regression
+
+Logistic regression makes several key assumptions:
+
+1. **Linearity in log-odds**: The relationship between predictors and log-odds is linear (though this can be relaxed with transformations or splines)
+
+2. **Independence**: Observations are independent (no clustering or repeated measures)
+
+3. **No perfect separation**: There must be some overlap between groups (can't perfectly separate outcomes with predictors)
+
+4. **Adequate sample size**: Need sufficient events (typically ≥10 events per predictor variable)
+
+5. **No multicollinearity**: Predictor variables should not be highly correlated (though less critical than in linear regression)
+
+### When Logistic Regression Works Well
+
+✅ **Good for**:
+- Binary outcomes (mortality, complications, diagnoses)
+- When interpretability is important (odds ratios are clinically meaningful)
+- When you have a moderate number of predictors
+- When relationships are approximately linear in log-odds space
+- When you need well-calibrated probability estimates
+
+### When to Consider Alternatives
+
+❌ **Consider other methods when**:
+- You have very few events (rare outcomes) relative to predictors
+- Relationships are highly non-linear in log-odds space
+- You have many predictors relative to sample size (consider regularization)
+- You need to model complex interactions automatically (consider machine learning)
+- You have clustered or longitudinal data (consider mixed-effects models)
+
+### Calibration and Discrimination
+
+Two key concepts for evaluating logistic regression models:
+
+1. **Discrimination**: How well does the model separate high-risk from low-risk patients? Measured by the **AUC (Area Under the ROC Curve)** or **C-statistic**
+   - AUC = 0.5: No better than chance
+   - AUC = 0.7-0.8: Acceptable
+   - AUC = 0.8-0.9: Excellent
+   - AUC > 0.9: Outstanding
+
+2. **Calibration**: Do predicted probabilities match observed frequencies? A well-calibrated model predicts 30% mortality for patients who actually have ~30% mortality
+   - Measured by calibration plots or the **Hosmer-Lemeshow test**
+
+Both are important: a model can discriminate well (separate high/low risk) but be poorly calibrated (probabilities don't match reality), or vice versa.
+
+---
+
+## Summary
+
+### Key Takeaways
+
+1. **Linear regression fails for binary outcomes** - It can produce predictions outside [0,1] and assumes constant variance, which doesn't hold for binary data. We need a method that constrains predictions to valid probability ranges.
+
+2. **Logistic regression uses the logit link function** - It models the log-odds (logit) as a linear combination of predictors, then transforms to probabilities using the logistic function. This creates an S-shaped curve that ensures probabilities stay between 0 and 1.
+
+3. **Coefficients represent odds ratios** - Each coefficient tells us how a predictor affects the odds of the outcome. The odds ratio = exp(coefficient) describes the multiplicative effect on odds. This allows us to quantify risk factors and understand which patient characteristics matter most for outcomes like mortality.
+
+4. **Logistic regression has strengths and limitations** - It's interpretable, handles binary outcomes well, and produces calibrated probabilities. However, it assumes linearity in log-odds, requires adequate sample size, and may oversimplify complex relationships. Understanding these trade-offs helps you know when logistic regression is appropriate and when to consider alternatives.
+
+---
+
+## Questions for Reflection
+
+1. Why can't we simply constrain linear regression predictions to [0,1] and use that for binary outcomes? What problems would this approach still have?
+
+2. In the Vizient-like model, why might sepsis (coefficient 1.10) have a smaller effect than mechanical ventilation (coefficient 1.40)? What clinical factors could explain this?
+
+3. How would you interpret an odds ratio of 2.0 for a continuous predictor like age? How does this differ from interpreting an odds ratio of 2.0 for a binary predictor like "male"?
+
+4. What additional variables might improve a GI bleed mortality prediction model? What about interaction terms (e.g., sepsis × age)?
+
+5. How might the coefficients in this model differ if you were predicting mortality in a different patient population (e.g., pediatric patients, elective surgery patients)?
+
+---
+
+## References
+
+- Hosmer, D. W., Lemeshow, S., & Sturdivant, R. X. (2013). *Applied logistic regression* (3rd ed.). John Wiley & Sons.
+
+- Steyerberg, E. W. (2019). *Clinical prediction models: A practical approach to development, validation, and updating* (2nd ed.). Springer.
+
+- Vizient. (n.d.). Clinical Data Base and Resource Manager. Retrieved from Vizient website.

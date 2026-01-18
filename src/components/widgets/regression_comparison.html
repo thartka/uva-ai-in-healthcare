@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear vs Logistic Regression</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .slider-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="range"] {
+            width: 80%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        .dose-value {
+            display: inline-block;
+            margin-left: 15px;
+            font-size: 18px;
+            color: #2196F3;
+            font-weight: bold;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .chart-wrapper {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            height: 450px;
+        }
+        .chart-wrapper canvas {
+            height: 360px !important;
+            width: 75% !important;
+            margin: 0 auto;
+            display: block;
+        }
+        .chart-wrapper h3 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        .prediction {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #666;
+        }
+        .prediction strong {
+            color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slider-container">
+            <label for="doseSlider">
+                Norepinephrine Dose (mcg/min):
+                <span class="dose-value" id="doseValue">10</span>
+            </label>
+            <input type="range" id="doseSlider" min="0" max="20" value="10" step="0.5">
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <h3>Linear Regression</h3>
+                <canvas id="linearChart"></canvas>
+                <div class="prediction" id="linearPrediction"></div>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Logistic Regression</h3>
+                <canvas id="logisticChart"></canvas>
+                <div class="prediction" id="logisticPrediction"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate sample data
+        function generateLinearData() {
+            const data = [];
+            for (let i = 0; i < 30; i++) {
+                const dose = Math.random() * 20;
+                const noise = (Math.random() - 0.5) * 15;
+                const map = 50 + 0.6 * dose + noise;
+                data.push({ x: dose, y: map });
+            }
+            return data.sort((a, b) => a.x - b.x);
+        }
+
+        function generateLogisticData() {
+            const data = [];
+            for (let i = 0; i < 50; i++) {
+                const dose = Math.random() * 20;
+                const prob = 1 / (1 + Math.exp(-0.2 * (dose - 15)));
+                const outcome = Math.random() < prob ? 1 : 0;
+                data.push({ x: dose, y: outcome });
+            }
+            return data.sort((a, b) => a.x - b.x);
+        }
+
+        const linearData = generateLinearData();
+        const logisticData = generateLogisticData();
+
+        // Create regression line data
+        function createLinearLine() {
+            const line = [];
+            for (let dose = 0; dose <= 20; dose += 1) {
+                line.push({ x: dose, y: 50 + 0.6 * dose });
+            }
+            return line;
+        }
+
+        function createLogisticCurve() {
+            const curve = [];
+            for (let dose = 0; dose <= 20; dose += 0.5) {
+                const prob = 1 / (1 + Math.exp(-0.2 * (dose - 15)));
+                curve.push({ x: dose, y: prob });
+            }
+            return curve;
+        }
+
+        // Linear regression chart
+        const linearCtx = document.getElementById('linearChart').getContext('2d');
+        const linearChart = new Chart(linearCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Observed MAP',
+                        data: linearData,
+                        backgroundColor: 'rgba(33, 150, 243, 0.6)',
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        pointRadius: 5,
+                        showLine: false
+                    },
+                    {
+                        label: 'Linear Fit',
+                        data: createLinearLine(),
+                        type: 'line',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false
+                    },
+                    {
+                        label: 'Current Dose',
+                        data: [],
+                        backgroundColor: 'rgba(76, 175, 80, 1)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        pointRadius: 8,
+                        pointStyle: 'star'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Norepinephrine Dose (mcg/min)' },
+                        min: 0,
+                        max: 20
+                    },
+                    y: {
+                        title: { display: true, text: 'Mean Arterial Pressure (mmHg)' },
+                        min: 40,
+                        max: 70
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Logistic regression chart
+        const logisticCtx = document.getElementById('logisticChart').getContext('2d');
+        const logisticChart = new Chart(logisticCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'MAP > 65 (Yes=1, No=0)',
+                        data: logisticData,
+                        backgroundColor: 'rgba(33, 150, 243, 0.6)',
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Logistic Curve: P(MAP>65)',
+                        data: createLogisticCurve(),
+                        type: 'line',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false
+                    },
+                    {
+                        label: 'Current Dose',
+                        data: [],
+                        backgroundColor: 'rgba(76, 175, 80, 1)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        pointRadius: 8,
+                        pointStyle: 'star'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Norepinephrine Dose (mcg/min)' },
+                        min: 0,
+                        max: 20
+                    },
+                    y: {
+                        title: { display: true, text: 'Probability MAP > 60' },
+                        min: -0.05,
+                        max: 1.05,
+                        ticks: {
+                            stepSize: 0.2,
+                            callback: function(value) {
+                                return value >= 0 && value <= 1 ? value.toFixed(1) : '';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Update charts based on slider
+        const slider = document.getElementById('doseSlider');
+        const doseValue = document.getElementById('doseValue');
+        const linearPrediction = document.getElementById('linearPrediction');
+        const logisticPrediction = document.getElementById('logisticPrediction');
+
+        function updateCharts(dose) {
+            doseValue.textContent = dose;
+            
+            // Linear prediction
+            const mapPrediction = 50 + 0.6 * dose;
+            linearPrediction.innerHTML = `Predicted MAP: <strong>${mapPrediction.toFixed(1)} mmHg</strong>`;
+            
+            // Logistic prediction
+            const probability = 1 / (1 + Math.exp(-0.2 * (dose - 15)));
+            logisticPrediction.innerHTML = `P(MAP > 60): <strong>${(probability * 100).toFixed(1)}%</strong>`;
+            
+            // Update markers
+            linearChart.data.datasets[2].data = [{ x: dose, y: mapPrediction }];
+            linearChart.update('none');
+            
+            logisticChart.data.datasets[2].data = [{ x: dose, y: probability }];
+            logisticChart.update('none');
+        }
+
+        slider.addEventListener('input', (e) => {
+            updateCharts(parseFloat(e.target.value));
+        });
+
+        // Initialize
+        updateCharts(10);
+    </script>
+</body>
+</html>

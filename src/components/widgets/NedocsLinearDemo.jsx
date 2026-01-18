@@ -312,25 +312,17 @@ export default function NedocsLinearDemo() {
         margin: "16px 0",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>
-            NEDOCS-like Linear Regression Demo
-          </div>
-          <div style={{ color: "var(--ifm-color-emphasis-700)", fontSize: 13 }}>
-            Synthetic example for teaching linear regression:{" "}
-            <code>score = β0 + Σ βi·xi</code>
-          </div>
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
+        <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>
+          NEDOCS-like Linear Regression Demo
         </div>
+        <div style={{ color: "var(--ifm-color-emphasis-700)", fontSize: 13 }}>
+          Synthetic example for teaching linear regression:{" "}
+          <code>score = β0 + Σ βi·xi</code>
+        </div>
+      </div>
 
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
         <button
           onClick={resetDefaults}
           style={{
@@ -357,7 +349,7 @@ export default function NedocsLinearDemo() {
       >
         {/* Left: Inputs */}
         <div>
-          <div style={{ fontWeight: 800, marginBottom: 8 }}>Inputs (x)</div>
+          <div style={{ fontWeight: 800, marginBottom: 8, textAlign: "center" }}>Inputs (x)</div>
 
           <SliderRow
             label="Beds occupied"
@@ -406,7 +398,7 @@ export default function NedocsLinearDemo() {
 
         {/* Middle: Coefficients */}
         <div>
-          <div style={{ fontWeight: 800, marginBottom: 8 }}>Coefficients (β)</div>
+          <div style={{ fontWeight: 800, marginBottom: 8, textAlign: "center" }}>Coefficients (β)</div>
 
           <SliderRow
             label="Intercept (β0)"
@@ -466,7 +458,7 @@ export default function NedocsLinearDemo() {
 
         {/* Right: Outputs */}
         <div>
-          <div style={{ fontWeight: 800, marginBottom: 8 }}>Output</div>
+          <div style={{ fontWeight: 800, marginBottom: 8, textAlign: "center" }}>Output</div>
 
           <div
             style={{
@@ -491,13 +483,13 @@ export default function NedocsLinearDemo() {
             </div>
           </div>
 
-          <div style={{ fontWeight: 800, marginBottom: 8 }}>Term-by-term contributions</div>
+          <div style={{ fontWeight: 800, marginBottom: 8, textAlign: "center" }}>Term-by-term contributions</div>
           {terms.contributions.map((c) => (
             <ContributionBar key={c.label} label={c.label} value={c.value} maxAbs={maxAbsContribution} />
           ))}
 
           <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid var(--ifm-color-emphasis-200)" }}>
-            <div style={{ fontWeight: 800, marginBottom: 8 }}>Residual intuition (optional)</div>
+            <div style={{ fontWeight: 800, marginBottom: 8, textAlign: "center" }}>Residual intuition (optional)</div>
 
             <SliderRow
               label="Observed score (y)"
