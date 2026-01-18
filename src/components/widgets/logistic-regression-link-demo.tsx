@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import Plot from 'react-plotly.js';
+// @ts-ignore - BrowserOnly is available at runtime from @docusaurus/core
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+const PlotComponent = ({ data, layout, config }) => {
+  const Plot = require('react-plotly.js').default;
+  return <Plot data={data} layout={layout} config={config} />;
+};
 
 const LogisticRegressionDemo = () => {
   const [step, setStep] = useState(0);
@@ -139,11 +145,13 @@ const LogisticRegressionDemo = () => {
         padding: '1.5rem',
         marginBottom: '1.5rem'
       }}>
-        <Plot
-          data={plotData}
-          layout={plotLayout}
-          config={{ responsive: true, displayModeBar: false }}
-        />
+        <BrowserOnly>
+          {() => <PlotComponent
+            data={plotData}
+            layout={plotLayout}
+            config={{ responsive: true, displayModeBar: false }}
+          />}
+        </BrowserOnly>
       </div>
 
       <div style={{

@@ -1,5 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import Plot from 'react-plotly.js';
+// BrowserOnly is available at runtime from @docusaurus/core
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+const PlotComponent = ({ data, layout, config }) => {
+  const Plot = require('react-plotly.js').default;
+  return <Plot data={data} layout={layout} config={config} />;
+};
 
 const RegressionPlot = () => {
   const [norepiDose, setNorepiDose] = useState(10);
@@ -126,11 +132,13 @@ const RegressionPlot = () => {
 
   return (
     <div>
-      <Plot
-        data={univariableData}
-        layout={univariableLayout}
-        config={{ responsive: true }}
-      />
+      <BrowserOnly>
+        {() => <PlotComponent
+          data={univariableData}
+          layout={univariableLayout}
+          config={{ responsive: true }}
+        />}
+      </BrowserOnly>
       <div style={{ margin: '20px', textAlign: 'center' }}>
         <label htmlFor="norepi-slider" style={{ marginRight: '10px' }}>
           Norepinephrine Dose (mcg/kg/min): {norepiDose.toFixed(1)}
@@ -146,11 +154,13 @@ const RegressionPlot = () => {
           style={{ width: '300px' }}
         />
       </div>
-      <Plot
-        data={multivariableData}
-        layout={multivariableLayout}
-        config={{ responsive: true }}
-      />
+      <BrowserOnly>
+        {() => <PlotComponent
+          data={multivariableData}
+          layout={multivariableLayout}
+          config={{ responsive: true }}
+        />}
+      </BrowserOnly>
     </div>
   );
 };

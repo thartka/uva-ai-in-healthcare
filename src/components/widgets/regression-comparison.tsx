@@ -1,5 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import Plot from 'react-plotly.js';
+// @ts-ignore - BrowserOnly is available at runtime from @docusaurus/core
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+const PlotComponent = ({ data, layout, config }) => {
+  const Plot = require('react-plotly.js').default;
+  return <Plot data={data} layout={layout} config={config} />;
+};
 
 const RegressionComparison = () => {
   const [dose, setDose] = useState(10);
@@ -178,11 +184,13 @@ const RegressionComparison = () => {
             }}>
               Linear Regression
             </h3>
-            <Plot
-              data={linearPlotData}
-              layout={linearLayout}
-              config={{ responsive: true, displayModeBar: false }}
-            />
+            <BrowserOnly>
+              {() => <PlotComponent
+                data={linearPlotData}
+                layout={linearLayout}
+                config={{ responsive: true, displayModeBar: false }}
+              />}
+            </BrowserOnly>
             <div style={{
               textAlign: 'center',
               marginTop: '0.5rem',
@@ -251,11 +259,13 @@ const RegressionComparison = () => {
             }}>
               Logistic Regression
             </h3>
-            <Plot
-              data={logisticPlotData}
-              layout={logisticLayout}
-              config={{ responsive: true, displayModeBar: false }}
-            />
+            <BrowserOnly>
+              {() => <PlotComponent
+                data={logisticPlotData}
+                layout={logisticLayout}
+                config={{ responsive: true, displayModeBar: false }}
+              />}
+            </BrowserOnly>
             <div style={{
               textAlign: 'center',
               marginTop: '0.5rem',
