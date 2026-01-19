@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-title: "Lecture 1.1.4 – Linear Regression"
+title: "Session 1.1.4 – Linear Regression"
 ---
 
 <div style={{
@@ -39,7 +39,7 @@ title: "Lecture 1.1.4 – Linear Regression"
   </div>
 </div>
 
-# Lecture 1.1.4 – Linear Regression
+# Session 1.1.4 – Linear Regression
 
 ## The Problem: Emergency Department Crowding
 
@@ -80,7 +80,7 @@ This dashboard shows the NEDOCS score in real-time, calculated from operational 
 
 ## Learning Objectives
 
-By the end of this lecture, you will be able to:
+By the end of this session, you will be able to:
 
 1. **Explain the fundamental concept of linear regression** - Describe how linear regression models the relationship between predictor variables and a continuous outcome, using NEDOCS as an example of predicting ED crowding scores
 
@@ -164,27 +164,6 @@ Multivariable regression lets us:
 2. **Improve prediction accuracy** - More information leads to better predictions
 3. **Understand complex relationships** - Identify which factors matter most
 
-<img 
-  src="/img/multivariable-regression-example.png" 
-  alt="Multivariable regression example" 
-  style={{
-    width: '100%',
-    maxWidth: '800px',
-    height: 'auto',
-    display: 'block',
-    margin: '2rem auto',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-  }}
-/>
-
-:::success ✋ Hands-on Activity: Bi-variate vs Multi-variable Regression
-
-import RegressionPlot from '@site/src/components/widgets/bivariate-vs-multivariable-regression';
-
-<RegressionPlot />
-
-:::
 
 ### The Multivariable Regression Formula
 
@@ -200,6 +179,16 @@ Where:
 - **β₁, β₂, β₃, ...** = coefficients for each predictor
 - **β₀** = intercept (baseline value when all predictors = 0)
 - **ε** = error term
+
+:::success ✋ Hands-on Activity: Bi-variate vs Multi-variable Regression
+
+import RegressionPlot from '@site/src/components/widgets/bivariate-vs-multivariable-regression';
+
+<RegressionPlot />
+
+:::
+
+
 
 ### NEDOCS: A Multivariable Regression Model
 

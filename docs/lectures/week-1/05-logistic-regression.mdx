@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-title: "Lecture 1.1.5 – Logistic Regression"
+title: "Session 1.1.5 – Logistic Regression"
 ---
 
 <div style={{
@@ -39,7 +39,7 @@ title: "Lecture 1.1.5 – Logistic Regression"
   </div>
 </div>
 
-# Lecture 1.1.5 – Logistic Regression
+# Session 1.1.5 – Logistic Regression
 
 ## The Problem: Predicting Mortality in Healthcare
 
@@ -87,7 +87,7 @@ Consider **gastrointestinal (GI) bleeding**—a common, serious condition that r
 
 ## Learning Objectives
 
-By the end of this lecture, you will be able to:
+By the end of this session, you will be able to:
 
 1. **Explain why linear regression fails for binary outcomes** - Understand the fundamental limitations of linear regression when predicting probabilities and binary events, including the problem of predictions outside the [0,1] range
 
@@ -185,20 +185,6 @@ import LogisticRegressionDemo from '@site/src/components/widgets/logistic-regres
 
 ::::
 
-### Key Insights
-
-1. **Linear in log-odds**: The relationship between predictors and log-odds is linear—each unit increase in a predictor adds a fixed amount to the log-odds
-
-2. **Non-linear in probability**: The same relationship becomes S-shaped in probability space—the effect of a predictor depends on where you are on the curve
-
-3. **Diminishing returns**: As probability approaches 0 or 1, the same change in log-odds produces smaller changes in probability. This reflects real-world risk: going from 1% to 2% risk (doubling) feels different than going from 50% to 51% risk
-
-4. **Steepest at p = 0.5**: The curve is steepest when probability is near 0.5, meaning predictors have the largest effect on probability in the middle range
-
----
-
-
-
 This transformation creates the characteristic **S-shaped curve** that:
 - Approaches 0 as logit → -∞
 - Approaches 1 as logit → +∞
@@ -212,18 +198,7 @@ Here's an illustrative example of how a Vizient-like model might predict mortali
 
 The model predicts mortality probability using logistic regression with the following equation:
 
-**logit(p) = -7.0**
-- **+ 0.055 × (Age)**
-- **+ 0.20 × (Male)**
-- **+ 0.60 × (Emergency)**
-- **+ 0.90 × (ICU_24h)**
-- **+ 0.08 × (ElixScore)**
-- **+ 0.70 × (CHF_POA)**
-- **+ 0.55 × (CKD_POA)**
-- **+ 1.10 × (Sepsis_POA)**
-- **+ 1.40 × (Vent_24h)**
-- **+ 0.65 × (Creatinine_high)**
-- **+ 0.85 × (Lactate_high)**
+**logit(p) = -7.0 + 0.055 × (Age) + 0.20 × (Male) + 0.60 × (Emergency) + 0.90 × (ICU_24h) + 0.08 × (ElixScore) + 0.70 × (CHF_POA) + 0.55 × (CKD_POA) + 1.10 × (Sepsis_POA) + 1.40 × (Vent_24h) + 0.65 × (Creatinine_high) + 0.85 × (Lactate_high)**
 
 Then convert to probability:
 
@@ -240,19 +215,6 @@ Explore how patient characteristics affect predicted mortality risk using this i
 import GIBleedMortalityCalculator from '@site/src/components/widgets/gibleed-mortality-calculator';
 
 <GIBleedMortalityCalculator />
-
-**Model Predictors:**
-- **Age** (in years)
-- **Male** (1 = yes, 0 = no)
-- **Emergency admission** (1 = ED/urgent, 0 = elective)
-- **ICU first 24h** (1 = yes, 0 = no)
-- **Elixhauser comorbidity score** (integer, measures overall comorbidity burden)
-- **CHF_POA** - Congestive heart failure present-on-admission (1/0)
-- **CKD_POA** - Chronic kidney disease present-on-admission (1/0)
-- **Sepsis_POA** - Sepsis present-on-admission (1/0)
-- **Vent_24h** - Mechanical ventilation in first 24 hours (1/0)
-- **Creatinine_high** (1 if first creatinine ≥ 2.0 mg/dL, else 0)
-- **Lactate_high** (1 if first lactate ≥ 4 mmol/L, else 0)
 
 ::::
 

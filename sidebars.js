@@ -15,12 +15,12 @@
  @type {import('@docusaurus/plugin-content-docs').SidebarsConfig}
  */
 const sidebars = {
-  // Manually configure sidebar with Lectures category linking to intro page
+  // Manually configure sidebar with Sessions category linking to intro page
   tutorialSidebar: [
     'schedule',
     {
       type: 'category',
-      label: 'Lectures',
+      label: 'Sessions',
       link: {
         type: 'doc',
         id: 'lecures-intro',

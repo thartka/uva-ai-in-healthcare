@@ -1,0 +1,271 @@
+---
+id: neural-networks-cnn-02
+sidebar_position: 6
+title: "Session 1.2.2 – Neural Networks and Convolutional Neural Networks"
+---
+
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  marginBottom: '2rem',
+  paddingBottom: '1.5rem',
+  borderBottom: '1px solid rgba(35, 45, 75, 0.1)'
+}}>
+  <img 
+    src="/img/AI%20in%20Healthcare-logo.png" 
+    alt="AI in Healthcare Logo" 
+    style={{
+      height: '60px',
+      width: 'auto'
+    }}
+  />
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column'
+  }}>
+    <span style={{
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      letterSpacing: '0.05em',
+      color: '#E57200',
+      marginBottom: '0.25rem'
+    }}>R2795</span>
+    <span style={{
+      fontSize: '1.25rem',
+      fontWeight: 400,
+      color: '#232D4B',
+      lineHeight: '1.3'
+    }}>Data to Decisions: Introduction to AI in Healthcare</span>
+  </div>
+</div>
+
+# Session 1.2.2 – Neural Networks and Convolutional Neural Networks (CNNs) for Clinical Image Recognition
+
+## The Problem: Accurate Visual Diagnosis Is Hard
+
+Clinicians often encounter diagnostic dilemmas where pattern recognition is key—for example, assessing a rash or lesion. Human interpretation varies by experience, and subtle visual differences matter. To assist clinical decision-making, automated tools—especially those based on deep learning—have emerged.
+
+In this session, we will treat a tool like VisualDx as if it were powered by a convolutional neural network (CNN) for rash diagnosis. Understanding how CNNs work explains both their power and limitations in clinical use.
+
+## Learning Objectives
+
+By the end of this session, you will be able to:
+
+1. **Explain the fundamental idea of neural networks** — Describe how networks map inputs (e.g., pixels, features) to outputs by learning weights and activation functions.
+
+2. **Define overfitting and data needs** — Explain why neural networks can learn complex relationships yet be prone to overfitting, and why they need large, representative datasets.
+
+3. **Articulate proper evaluation practice** — Describe the role of training, validation, and test datasets in developing trustworthy models and identify common pitfalls like data leakage.
+
+4. **Interpret what CNNs do and why interpretability matters** — Explain how CNNs process images and why interpretability is a critical issue for trust and safety in clinical AI.
+
+---
+
+## 1. The Fundamental Concept of Neural Networks (5–15 min)
+
+### What Is a Neural Network?
+
+Neural networks are computational models inspired by biological neural systems. They consist of:
+
+- **Nodes (neurons)** that compute simple functions
+- **Weights** on connections between nodes
+- **Activation functions** that introduce non-linearity
+
+**Core idea**: A neural network learns a mapping from input to output by adjusting weights to minimize prediction error.
+
+### How Do Neural Networks Learn?
+
+Learning happens through a process called **gradient-based optimization**:
+
+1. The network makes a prediction
+2. The error between predicted and true values is computed
+3. The error is propagated backward
+4. Weights are updated to reduce future error
+
+The network doesn't "reason"; it learns statistical associations between patterns and labels.
+
+:::success ✋ Visualization/Interactive Placeholder 1
+
+**Build-a-Neuron Demo**
+
+Interactive widget where students adjust input values and weights and see how output changes after applying an activation function.
+
+**Teaching goal**: Make the unit computation intuitive and non-magical.
+
+:::
+
+---
+
+## 2. Flexibility and Data Requirements (15–25 min)
+
+### Why Neural Networks Are Powerful
+
+Neural networks can capture **nonlinear relationships** between inputs and outputs that simpler models cannot.
+
+This flexibility allows them to detect subtle patterns in complex data like images.
+
+### Overfitting: When Flexibility Becomes a Liability
+
+Because neural networks are so flexible, they can:
+
+- **memorize noise** in the training data
+- show **excellent performance** on training sets
+- perform **poorly** on new, unseen data
+
+This is called **overfitting**.
+
+### Data Needs
+
+To generalize well, neural networks typically require:
+
+- **Large datasets**
+- **Representative samples** across demographics, devices, settings
+- **High-quality labels**
+
+More data helps but does not guarantee generalization if the data is unrepresentative or biased.
+
+:::success ✋ Visualization/Interactive Placeholder 2
+
+**Training vs. Validation Performance Curves**
+
+Interactively vary model complexity and watch how validation performance diverges from training performance.
+
+**Teaching goal**: Reveal overfitting visually.
+
+:::
+
+---
+
+## 3. Model Evaluation: Training, Validation, and Test Sets (25–35 min)
+
+### The Three Datasets
+
+To develop trustworthy models, we separate data into:
+
+- **Training set**: Used to learn model parameters
+- **Validation set**: Used to tune model choices and hyperparameters
+- **Test set**: Held out until the end to estimate real-world performance
+
+This separation guards against biased performance estimates.
+
+### Why This Matters Clinically
+
+If a test set is inadvertently used for model development or tuning, performance estimates become overly optimistic. This is analogous to invalid study designs in clinical research.
+
+**Data leakage** occurs when information from the test set influences model training or tuning.
+
+Examples include:
+
+- Same patient images in both training and test sets
+- Related images (e.g., adjacent frames) split across datasets
+- Post-diagnosis labels included as predictors
+
+Each of these artificially inflates performance.
+
+:::success ✋ Interactive Placeholder 3
+
+**"Spot the Flaw" Mock AI Study Abstract**
+
+Students identify where data leakage or misuse of test data occurs.
+
+**Teaching goal**: Practice critical AI methods appraisal.
+
+:::
+
+---
+
+## 4. Interpretability and Trust (35–43 min)
+
+### What Is Interpretability?
+
+In medicine, interpretability means understanding why a model made a particular prediction in terms that clinicians can evaluate and trust.
+
+Interpretability supports:
+
+- Clinical reasoning
+- Error detection
+- Patient explanation
+- Regulatory trust
+
+### Neural Networks Are Often Opaque
+
+Neural networks' internal knowledge is distributed across thousands or millions of parameters.
+
+They do not provide human-readable reasoning steps.
+
+Even techniques like:
+
+- Saliency maps
+- Heatmaps
+
+only show which regions influenced the output, not why those regions led to that interpretation.
+
+This can be misleading.
+
+:::success ✋ Visualization/Interactive Placeholder 4
+
+**Saliency Map vs. Clinician Reasoning**
+
+Show a CNN heatmap on an image and side-by-side clinician reasoning steps for the same image.
+
+**Teaching goal**: Clarify the limits of current interpretability tools.
+
+:::
+
+---
+
+## 5. Convolutional Neural Networks (CNNs) and Image Recognition (43–48 min)
+
+### Why Standard Neural Networks Struggle with Images
+
+Raw images are large and high-dimensional. A fully connected network would require an impractical number of parameters.
+
+### How CNNs Work
+
+CNNs use:
+
+- **Convolutional filters** (cross-correlation) to detect local patterns (e.g., edges, textures)
+- **Weight sharing** to reuse filters across an image
+- **Pooling** to reduce spatial dimensionality
+- **Hierarchical feature learning** — early layers detect simple patterns, later layers detect complex patterns
+
+This makes them efficient and effective for image analysis.
+
+### Return to VisualDx (as CNN-based tool)
+
+Tools like VisualDx can be framed as CNN-based systems:
+
+- They process clinical images through layers of learned filters
+- They output likely diagnoses based on visual pattern associations
+- They do not perform causal reasoning
+
+This perspective explains both their strengths (pattern detection) and limitations (lack of mechanistic understanding, vulnerability to distribution shifts).
+
+---
+
+## Summary
+
+### Key Takeaways
+
+1. **Neural networks learn by adjusting weights** to reduce error and can model complex patterns.
+
+2. **Their flexibility makes them prone to overfitting**; data quality and quantity matter.
+
+3. **Proper dataset separation** (training, validation, test) is essential for reliable evaluation.
+
+4. **Neural networks, and CNNs in particular, lack inherent interpretability.**
+
+5. **CNNs enable automated visual pattern recognition**, which underlies tools like VisualDx, but they do not understand disease.
+
+---
+
+## Questions for Reflection
+
+1. What are common pitfalls in evaluating neural network-based diagnostic tools?
+
+2. How does overfitting manifest in clinical image models?
+
+3. When might lack of interpretability be unsafe in clinical practice?
+
+4. In what scenarios would CNN-based tools be most helpful, and where would you remain skeptical?

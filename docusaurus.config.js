@@ -20,7 +20,12 @@ const config = {
   projectName: "uva-ai-in-healthcare", // your repo name
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
 
   i18n: {
     defaultLocale: "en",
@@ -69,7 +74,7 @@ const config = {
         },
         items: [
           { to: "/docs/schedule", label: "Schedule", position: "left" },
-          { to: "/docs/lectures/intro", label: "Lectures", position: "left" },
+          { to: "/docs/lectures/intro", label: "Sessions", position: "left" },
           // Add later if desired:
           // { href: "https://github.com/<org>/<repo>", label: "GitHub", position: "right" },
         ],
@@ -82,7 +87,7 @@ const config = {
             title: "Course",
             items: [
               { label: "Schedule", to: "/docs/schedule" },
-              { label: "Lectures", to: "/docs/lectures/intro" },
+              { label: "Sessions", to: "/docs/lectures/intro" },
             ],
           },
         ],

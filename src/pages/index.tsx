@@ -57,7 +57,7 @@ export default function Home(): JSX.Element {
               className="button button--secondary button--lg"
               to="/docs/lectures/intro"
             >
-              Go to Lectures
+              Go to Sessions
             </Link>
           </div>
         </section>

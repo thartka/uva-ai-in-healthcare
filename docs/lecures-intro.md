@@ -1,6 +1,6 @@
 ---
-title: Lectures
+title: Sessions
 slug: /lectures/intro
 ---
 
-Select a lecture from the menu on the left.
+Select a session from the menu on the left.

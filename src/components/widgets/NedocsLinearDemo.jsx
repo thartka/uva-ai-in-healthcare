@@ -521,7 +521,7 @@ export default function NedocsLinearDemo() {
           color: "var(--ifm-color-emphasis-700)",
         }}
       >
-        <strong>How to use this demo in the lecture:</strong> First, hold β fixed and vary one input x at a time
+        <strong>How to use this demo in the session:</strong> First, hold β fixed and vary one input x at a time
         to see linear additivity. Then hold x fixed and vary a coefficient β to reinforce interpretation as
         “units of y per unit of x.” Finally, discuss what the residual represents and why it matters for model
         checking.

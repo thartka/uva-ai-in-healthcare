@@ -45,10 +45,10 @@ const LogisticRegressionDemo = () => {
     },
     {
       title: "Step 2: Expanding the Logit",
-      equation: "log(p / (1-p)) = -6 + 0.1 × age",
+      equation: "ln(p / (1-p)) = -6 + 0.1 × age",
       description: "The logit is defined as the natural log of the odds ratio p/(1-p).",
       plotData: linearData,
-      yLabel: "log(p / (1-p))",
+      yLabel: "ln(p / (1-p))",
       yDomain: [-7, 8],
       showLogistic: false
     },
