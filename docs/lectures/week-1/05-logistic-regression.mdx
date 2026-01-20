@@ -262,21 +262,36 @@ Let's interpret some coefficients from our GI bleed mortality model:
 
 ---
 
-## 5. Advantages and Limitations of Logistic Regression
+## 5. Evaluation Metrics: AUC, Sensitivity, and Specificity
 
-### Assumptions of Logistic Regression
+The **ROC curve** plots sensitivity (True Positive Rate) vs. 1 - specificity (False Positive Rate) across all classification thresholds. The **Area Under the ROC Curve (AUC)** summarizes discrimination:
+- **AUC = 0.5**: Random guessing
+- **AUC = 0.7-0.8**: Acceptable
+- **AUC = 0.8-0.9**: Excellent
+- **AUC > 0.9**: Outstanding
 
-Logistic regression makes several key assumptions:
+At any threshold, predictions form a **confusion matrix** with four categories: True Positives (TP), False Positives (FP), True Negatives (TN), and False Negatives (FN). Key metrics:
 
-1. **Linearity in log-odds**: The relationship between predictors and log-odds is linear (though this can be relaxed with transformations or splines)
+- **Sensitivity (Recall)**: TP / (TP + FN) - How well does the model identify positive cases?
+- **Specificity**: TN / (TN + FP) - How well does the model avoid false alarms?
+- **Accuracy**: (TP + TN) / Total - Overall correctness (can be misleading with imbalanced data)
 
-2. **Independence**: Observations are independent (no clustering or repeated measures)
+There's a **trade-off** between sensitivity and specificity: lower thresholds increase sensitivity but decrease specificity. The optimal threshold depends on clinical context (e.g., screening vs. confirmatory tests).
 
-3. **No perfect separation**: There must be some overlap between groups (can't perfectly separate outcomes with predictors)
+::::success ✋ Hands-on Activity: Exploring ROC Curves and Classification Metrics
 
-4. **Adequate sample size**: Need sufficient events (typically ≥10 events per predictor variable)
+Interact with this demonstration to see how the ROC curve, confusion matrix, and classification metrics change as you adjust the classification threshold:
 
-5. **No multicollinearity**: Predictor variables should not be highly correlated (though less critical than in linear regression)
+import AUCSensitivitySpecificityDemo from '@site/src/components/widgets/auc-sensitivity-specificity-demo';
+
+<AUCSensitivitySpecificityDemo />
+
+::::
+
+---
+
+## 6. Advantages and Limitations of Logistic Regression
+
 
 ### When Logistic Regression Works Well
 
@@ -295,21 +310,6 @@ Logistic regression makes several key assumptions:
 - You have many predictors relative to sample size (consider regularization)
 - You need to model complex interactions automatically (consider machine learning)
 - You have clustered or longitudinal data (consider mixed-effects models)
-
-### Calibration and Discrimination
-
-Two key concepts for evaluating logistic regression models:
-
-1. **Discrimination**: How well does the model separate high-risk from low-risk patients? Measured by the **AUC (Area Under the ROC Curve)** or **C-statistic**
-   - AUC = 0.5: No better than chance
-   - AUC = 0.7-0.8: Acceptable
-   - AUC = 0.8-0.9: Excellent
-   - AUC > 0.9: Outstanding
-
-2. **Calibration**: Do predicted probabilities match observed frequencies? A well-calibrated model predicts 30% mortality for patients who actually have ~30% mortality
-   - Measured by calibration plots or the **Hosmer-Lemeshow test**
-
-Both are important: a model can discriminate well (separate high/low risk) but be poorly calibrated (probabilities don't match reality), or vice versa.
 
 ---
 

@@ -58,7 +58,7 @@ But "too busy" is subjective. One provider might think 30 patients is overwhelmi
 - Help predict when resources will be strained
 - Enable fair comparisons across different EDs
 
-## NEDOCS at UVA: A Real-World Implementation
+## NEDOCS: A Real-World Implementation
 
 The **National Emergency Department Overcrowding Scale (NEDOCS)** is a linear regression model used to quantify ED crowding. Here's what it looks like in practice at UVA:
 
@@ -283,6 +283,58 @@ Linear regression makes several key assumptions about the data and the relations
 - You need to predict probabilities (use logistic regression)
 - You have very complex patterns (consider machine learning)
 - You have limited data (consider simpler models)
+
+---
+
+## 5. Assessing Goodness of Fit: How Well Does the Model Work?
+
+Even if a regression model is statistically valid, we still need to ask: **how well does it describe the data, and is it the right level of complexity for the problem?** Measures of **goodness of fit** help us answer these questions.
+
+### R²: Proportion of Variation Explained
+
+**R² (R-squared)** tells us what **proportion of the variability in the outcome** (e.g., NEDOCS score) is explained by the predictors in the model.
+
+- **Range**: 0 to 1 (or 0% to 100%)
+- **Interpretation**: Higher R² means the model explains more of the variation in the outcome
+- **Example**: R² = 0.70 means 70% of the variation in NEDOCS scores is explained by the predictors in the model
+
+However:
+- R² **always increases** (or stays the same) when you add more predictors, even if they are not clinically meaningful
+- A very high R² does **not** guarantee that the model will generalize well to new patients or time periods
+
+### Adjusted R²: Penalizing Unnecessary Complexity
+
+**Adjusted R²** modifies R² to **penalize adding predictors that do not meaningfully improve the model**.
+
+- It will **increase** only if a new variable improves the model more than would be expected by chance
+- It can **decrease** when you add weak or irrelevant predictors
+- This makes adjusted R² more useful than raw R² when comparing models with different numbers of predictors
+
+### AIC and BIC: Balancing Fit and Simplicity
+
+Two widely used metrics for comparing models are:
+
+- **Akaike Information Criterion (AIC)**
+- **Bayesian Information Criterion (BIC)**
+
+Both:
+- Are based on how well the model fits the data **and** how many parameters it uses
+- **Penalize more complex models** (with more predictors or parameters)
+- Are used to **compare models**: **lower AIC or BIC values indicate a better balance of fit and simplicity**
+
+Key differences:
+- **AIC**: Typically more tolerant of complexity; often used when the goal is **prediction**
+- **BIC**: Harsher penalty for extra parameters; often used when the goal is **finding the “best” explanatory model** given the data
+
+### Clinical Perspective: Choosing a "Good Enough" Model
+
+When evaluating regression models in healthcare (like NEDOCS or a mortality prediction model), we should ask:
+
+1. **Does the model explain enough variation** (R² / adjusted R²) to be useful for decisions?
+2. **Is the model too complex** for the setting (AIC/BIC, number of variables, ease of implementation)?
+3. **Are the predictors clinically meaningful and available** in real time?
+
+In practice, a **slightly less predictive but simpler model** may be preferred if it is easier to implement, understand, and maintain in a busy clinical environment.
 
 ---
 
