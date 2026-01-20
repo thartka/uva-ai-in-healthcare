@@ -24,7 +24,7 @@
     "react-dom": "^19.0.0",
     "react-plotly.js": "^2.6.0",
     "recharts": "^2.15.0",
-    "lucide-react": "^0.263.1"
+    "lucide-react": "^0.469.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.9.2",
