@@ -64,6 +64,14 @@ const config = {
         respectPrefersColorScheme: true,
       },
 
+      // Make the left docs sidebar collapsible; keep right TOC auto-hide behavior as-is
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
+
       navbar: {
         title: "Data to Decisions",
         // If you want the UVA logo "front and center", keep it on the homepage hero.
