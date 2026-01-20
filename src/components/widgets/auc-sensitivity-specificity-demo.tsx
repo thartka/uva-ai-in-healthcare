@@ -106,8 +106,10 @@ function calculateMetrics(
   const accuracy = (tp + tn) / data.length;
   const sensitivity = tp / (tp + fn) || 0; // TPR, Recall
   const specificity = tn / (tn + fp) || 0; // TNR
+  const ppv = tp / (tp + fp) || 0; // Positive Predictive Value, Precision
+  const npv = tn / (tn + fn) || 0; // Negative Predictive Value
 
-  return { tp, fp, tn, fn, accuracy, sensitivity, specificity };
+  return { tp, fp, tn, fn, accuracy, sensitivity, specificity, ppv, npv };
 }
 
 export default function AUCSensitivitySpecificityDemo() {
@@ -564,6 +566,66 @@ export default function AUCSensitivitySpecificityDemo() {
                 {(metrics.specificity * 100).toFixed(1)}%
               </div>
             </div>
+            <div
+              style={{
+                border: '1px solid var(--ifm-color-emphasis-300)',
+                borderRadius: 8,
+                padding: 12,
+                textAlign: 'center',
+                backgroundColor: 'var(--ifm-color-emphasis-50)'
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  color: 'var(--ifm-color-emphasis-700)',
+                  marginBottom: 4,
+                  fontWeight: 600
+                }}
+              >
+                PPV
+              </div>
+              <div
+                style={{
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: '#3b82f6',
+                  fontVariantNumeric: 'tabular-nums'
+                }}
+              >
+                {(metrics.ppv * 100).toFixed(1)}%
+              </div>
+            </div>
+            <div
+              style={{
+                border: '1px solid var(--ifm-color-emphasis-300)',
+                borderRadius: 8,
+                padding: 12,
+                textAlign: 'center',
+                backgroundColor: 'var(--ifm-color-emphasis-50)'
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  color: 'var(--ifm-color-emphasis-700)',
+                  marginBottom: 4,
+                  fontWeight: 600
+                }}
+              >
+                NPV
+              </div>
+              <div
+                style={{
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: '#3b82f6',
+                  fontVariantNumeric: 'tabular-nums'
+                }}
+              >
+                {(metrics.npv * 100).toFixed(1)}%
+              </div>
+            </div>
           </div>
 
           {/* Metric definitions */}
@@ -586,6 +648,14 @@ export default function AUCSensitivitySpecificityDemo() {
             <div>
               <strong>Specificity:</strong> TN / (TN + FP) = {metrics.tn} /{' '}
               {metrics.tn + metrics.fp}
+            </div>
+            <div>
+              <strong>PPV (Positive Predictive Value):</strong> TP / (TP + FP) = {metrics.tp} /{' '}
+              {metrics.tp + metrics.fp}
+            </div>
+            <div>
+              <strong>NPV (Negative Predictive Value):</strong> TN / (TN + FN) = {metrics.tn} /{' '}
+              {metrics.tn + metrics.fn}
             </div>
           </div>
         </div>
