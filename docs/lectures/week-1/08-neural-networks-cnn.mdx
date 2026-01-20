@@ -1,6 +1,6 @@
 ---
 id: neural-networks-cnn-08
-sidebar_position: 6
+sidebar_position: 7
 title: "Session 1.2.2 – Neural Networks and Convolutional Neural Networks"
 ---
 
@@ -40,13 +40,54 @@ title: "Session 1.2.2 – Neural Networks and Convolutional Neural Networks"
   </div>
 </div>
 
-# Session 1.2.2 – Neural Networks and Convolutional Neural Networks (CNNs) for Clinical Image Recognition
+# Session 1.2.2 – VisualDx: Neural Networks and Convolutional Neural Networks
 
-## The Problem: Accurate Visual Diagnosis Is Hard
+## The Problem: Accurate Diagnosis of Rashes is Difficult
 
 Clinicians often encounter diagnostic dilemmas where pattern recognition is key—for example, assessing a rash or lesion. Human interpretation varies by experience, and subtle visual differences matter. To assist clinical decision-making, automated tools—especially those based on deep learning—have emerged.
 
 In this session, we will treat a tool like VisualDx as if it were powered by a convolutional neural network (CNN) for rash diagnosis. Understanding how CNNs work explains both their power and limitations in clinical use.
+
+<div style={{
+  display: 'flex',
+  gap: '1rem',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
+  marginTop: '2rem',
+  marginBottom: '2rem',
+  flexWrap: 'wrap'
+}}>
+  <img 
+    src="/img/visualdx-screenshot-1.png" 
+    alt="VisualDx Screenshot 1" 
+    style={{
+      maxWidth: '30%',
+      height: 'auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}
+  />
+  <img 
+    src="/img/visualdx-screenshot-2.png" 
+    alt="VisualDx Screenshot 2" 
+    style={{
+      maxWidth: '30%',
+      height: 'auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}
+  />
+  <img 
+    src="/img/visualdx-screenshot-3.png" 
+    alt="VisualDx Screenshot 3" 
+    style={{
+      maxWidth: '30%',
+      height: 'auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}
+  />
+</div>
 
 ## Learning Objectives
 
@@ -56,9 +97,7 @@ By the end of this session, you will be able to:
 
 2. **Define overfitting and data needs** — Explain why neural networks can learn complex relationships yet be prone to overfitting, and why they need large, representative datasets.
 
-3. **Articulate proper evaluation practice** — Describe the role of training, validation, and test datasets in developing trustworthy models and identify common pitfalls like data leakage.
-
-4. **Interpret what CNNs do and why interpretability matters** — Explain how CNNs process images and why interpretability is a critical issue for trust and safety in clinical AI.
+3. **Interpret what CNNs do and why interpretability matters** — Explain how CNNs process images and why interpretability is a critical issue for trust and safety in clinical AI.
 
 ---
 
@@ -74,9 +113,19 @@ Neural networks are computational models inspired by biological neural systems. 
 
 **Core idea**: A neural network learns a mapping from input to output by adjusting weights to minimize prediction error.
 
+:::success ✋ Hands-on Activity
+
+**Interactive Neural Network Demo**
+
+import NeuralNetworkVisualizer from '@site/src/components/widgets/neural-network-demo';
+
+<NeuralNetworkVisualizer />
+
+:::
+
 ### How Do Neural Networks Learn?
 
-Learning happens through a process called **gradient-based optimization**:
+Learning happens through a process called **back propogation**:
 
 1. The network makes a prediction
 2. The error between predicted and true values is computed
@@ -84,16 +133,6 @@ Learning happens through a process called **gradient-based optimization**:
 4. Weights are updated to reduce future error
 
 The network doesn't "reason"; it learns statistical associations between patterns and labels.
-
-:::success ✋ Visualization/Interactive Placeholder 1
-
-**Build-a-Neuron Demo**
-
-Interactive widget where students adjust input values and weights and see how output changes after applying an activation function.
-
-**Teaching goal**: Make the unit computation intuitive and non-magical.
-
-:::
 
 ---
 
@@ -115,6 +154,30 @@ Because neural networks are so flexible, they can:
 
 This is called **overfitting**.
 
+<img 
+  src="/img/deep-learning-overfitting.png" 
+  alt="Deep Learning Overfitting" 
+  style={{
+    maxWidth: '100%',
+    height: 'auto',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    marginTop: '1rem',
+    marginBottom: '1rem'
+  }}
+/>
+
+
+### The Three Datasets
+
+To develop trustworthy models, we separate data into:
+
+- **Training set**: Used to learn model parameters
+- **Validation set**: Used to tune model choices and hyperparameters
+- **Test set**: Held out until the end to estimate real-world performance
+
+**Data leakage** occurs when information from the test set influences model training or tuning.
+
 ### Data Needs
 
 To generalize well, neural networks typically require:
@@ -125,53 +188,44 @@ To generalize well, neural networks typically require:
 
 More data helps but does not guarantee generalization if the data is unrepresentative or biased.
 
-:::success ✋ Visualization/Interactive Placeholder 2
-
-**Training vs. Validation Performance Curves**
-
-Interactively vary model complexity and watch how validation performance diverges from training performance.
-
-**Teaching goal**: Reveal overfitting visually.
-
-:::
-
 ---
 
-## 3. Model Evaluation: Training, Validation, and Test Sets
+## 3. Convolutional Neural Networks (CNNs) and Image Recognition
 
-### The Three Datasets
+### Why Standard Neural Networks Struggle with Images
 
-To develop trustworthy models, we separate data into:
+Raw images are large and high-dimensional. A fully connected network would require an impractical number of parameters.
 
-- **Training set**: Used to learn model parameters
-- **Validation set**: Used to tune model choices and hyperparameters
-- **Test set**: Held out until the end to estimate real-world performance
+### How CNNs Work
 
-This separation guards against biased performance estimates.
+CNNs use:
 
-### Why This Matters Clinically
+- **Convolutional filters** (cross-correlation) to detect local patterns (e.g., edges, textures)
+- **Weight sharing** to reuse filters across an image
+- **Pooling** to reduce spatial dimensionality
+- **Hierarchical feature learning** — early layers detect simple patterns, later layers detect complex patterns
 
-If a test set is inadvertently used for model development or tuning, performance estimates become overly optimistic. This is analogous to invalid study designs in clinical research.
+This makes them efficient and effective for image analysis.
 
-**Data leakage** occurs when information from the test set influences model training or tuning.
+:::success ✋ Hands-on Activity
 
-Examples include:
+**Interactive CNN Convolution Demo**
 
-- Same patient images in both training and test sets
-- Related images (e.g., adjacent frames) split across datasets
-- Post-diagnosis labels included as predictors
+import CNNConvolutionDemo from '@site/src/components/widgets/cnn-convolution-demo';
 
-Each of these artificially inflates performance.
-
-:::success ✋ Interactive Placeholder 3
-
-**"Spot the Flaw" Mock AI Study Abstract**
-
-Students identify where data leakage or misuse of test data occurs.
-
-**Teaching goal**: Practice critical AI methods appraisal.
+<CNNConvolutionDemo />
 
 :::
+
+### Return to VisualDx (as CNN-based tool)
+
+Tools like VisualDx can be framed as CNN-based systems:
+
+- They process clinical images through layers of learned filters
+- They output likely diagnoses based on visual pattern associations
+- They do not perform causal reasoning
+
+This perspective explains both their strengths (pattern detection) and limitations (lack of mechanistic understanding, vulnerability to distribution shifts).
 
 ---
 
@@ -199,48 +253,101 @@ Even techniques like:
 - Saliency maps
 - Heatmaps
 
-only show which regions influenced the output, not why those regions led to that interpretation.
 
-This can be misleading.
 
-:::success ✋ Visualization/Interactive Placeholder 4
 
-**Saliency Map vs. Clinician Reasoning**
+<div style={{
+  backgroundColor: '#fef3c7',
+  border: '2px solid #fbbf24',
+  borderRadius: '8px',
+  padding: '1.5rem',
+  marginTop: '1.5rem',
+  marginBottom: '1.5rem',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+}}>
+  <h4 style={{
+    marginTop: 0,
+    marginBottom: '1rem',
+    color: '#92400e',
+    fontSize: '1.125rem',
+    fontWeight: 600,
+    textAlign: 'center'
+  }}>
+    STEMI Saliency Map
+  </h4>
+  <img 
+    src="/img/stemi-saliency-map.jpg" 
+    alt="STEMI Saliency Map" 
+    style={{
+      maxWidth: '100%',
+      height: 'auto',
+      borderRadius: '8px',
+      display: 'block',
+      margin: '0 auto'
+    }}
+  />
+</div>
 
-Show a CNN heatmap on an image and side-by-side clinician reasoning steps for the same image.
 
-**Teaching goal**: Clarify the limits of current interpretability tools.
-
-:::
 
 ---
 
-## 5. Convolutional Neural Networks (CNNs) and Image Recognition
+## 5. Advantages and Limitations of Neural Networks
 
-### Why Standard Neural Networks Struggle with Images
+### Assumptions and Requirements of Neural Networks
 
-Raw images are large and high-dimensional. A fully connected network would require an impractical number of parameters.
+Neural networks make several key assumptions and have specific requirements:
 
-### How CNNs Work
+1. **Large, representative datasets**: Neural networks require substantial amounts of high-quality training data that represents the target population and conditions
 
-CNNs use:
+2. **Stationarity**: The relationship between inputs and outputs should remain relatively stable over time (though this can be addressed with continual learning)
 
-- **Convolutional filters** (cross-correlation) to detect local patterns (e.g., edges, textures)
-- **Weight sharing** to reuse filters across an image
-- **Pooling** to reduce spatial dimensionality
-- **Hierarchical feature learning** — early layers detect simple patterns, later layers detect complex patterns
+3. **Independence**: Training examples should be independent (though some architectures can handle sequential dependencies)
 
-This makes them efficient and effective for image analysis.
+4. **No perfect separation**: There should be some variability in the data (can't perfectly separate classes with simple rules)
 
-### Return to VisualDx (as CNN-based tool)
+5. **Adequate computational resources**: Training requires sufficient computational power, especially for deep networks
 
-Tools like VisualDx can be framed as CNN-based systems:
+6. **Representative validation data**: Test sets should come from the same distribution as training data to accurately assess performance
 
-- They process clinical images through layers of learned filters
-- They output likely diagnoses based on visual pattern associations
-- They do not perform causal reasoning
+**Note**: These requirements don't always need to be perfectly met. Neural networks can be robust to some violations, but understanding these requirements helps you know when to use neural networks and when to consider alternatives.
 
-This perspective explains both their strengths (pattern detection) and limitations (lack of mechanistic understanding, vulnerability to distribution shifts).
+### When Neural Networks Work Well
+
+✅ **Good for**:
+- Complex pattern recognition tasks (images, audio, text)
+- When you have large, high-quality datasets
+- When relationships are highly nonlinear
+- When interpretability is less critical than performance
+- When you need to process high-dimensional data
+- When you can leverage transfer learning from pre-trained models
+- Real-time prediction tasks once the model is trained
+
+### When to Consider Alternatives
+
+❌ **Consider other methods when**:
+- You have limited data (neural networks need substantial datasets)
+- Interpretability is critical for clinical decision-making
+- You need to understand causal relationships (neural networks learn associations)
+- Relationships are simple and approximately linear (linear or logistic regression may suffice)
+- You have very few features relative to sample size (simpler models may be more appropriate)
+- Computational resources are severely constrained
+- Data may not represent the target population (distribution shift risk)
+- You need to predict probabilities for binary outcomes with small datasets (logistic regression may be better)
+
+### Key Challenges in Clinical Applications
+
+Two critical considerations for neural networks in healthcare:
+
+1. **Interpretability vs. Performance Trade-off**: Neural networks often achieve superior performance but at the cost of interpretability. In clinical settings, understanding *why* a model made a prediction can be as important as the prediction itself. Techniques like saliency maps and attention mechanisms provide some insight but don't fully explain the model's reasoning.
+
+2. **Distribution Shift and Generalization**: Neural networks are highly sensitive to differences between training and deployment data. Changes in imaging equipment, patient populations, clinical protocols, or disease prevalence can significantly degrade performance. This requires:
+   - Careful validation on diverse populations
+   - Ongoing monitoring of model performance
+   - Regular retraining with new data
+   - Human oversight to catch failures
+
+Both challenges are particularly important in healthcare, where model failures can have serious consequences and where clinicians need to trust and understand AI-assisted decisions.
 
 ---
 
@@ -252,11 +359,9 @@ This perspective explains both their strengths (pattern detection) and limitatio
 
 2. **Their flexibility makes them prone to overfitting**; data quality and quantity matter.
 
-3. **Proper dataset separation** (training, validation, test) is essential for reliable evaluation.
+3. **Neural networks are inherently difficult to interpretability.**
 
-4. **Neural networks, and CNNs in particular, lack inherent interpretability.**
-
-5. **CNNs enable automated visual pattern recognition**, which underlies tools like VisualDx, but they do not understand disease.
+4. **CNNs enable automated visual pattern recognition**, which underlies tools like VisualDx, but they do not understand disease.
 
 ---
 
