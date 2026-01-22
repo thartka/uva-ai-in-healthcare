@@ -46,6 +46,8 @@ title: "Session 1.2.2 – Neural Networks and Convolutional Neural Networks"
 
 Clinicians often encounter diagnostic dilemmas where pattern recognition is key—for example, assessing a rash or lesion. Human interpretation varies by experience, and subtle visual differences matter. To assist clinical decision-making, automated tools—especially those based on deep learning—have emerged.
 
+## VisualDx: A Rash Diagnosis App
+
 In this session, we will treat a tool like VisualDx as if it were powered by a convolutional neural network (CNN) for rash diagnosis. Understanding how CNNs work explains both their power and limitations in clinical use.
 
 <div style={{
@@ -70,16 +72,6 @@ In this session, we will treat a tool like VisualDx as if it were powered by a c
   <img 
     src="/img/visualdx-screenshot-2.png" 
     alt="VisualDx Screenshot 2" 
-    style={{
-      maxWidth: '30%',
-      height: 'auto',
-      borderRadius: '8px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-    }}
-  />
-  <img 
-    src="/img/visualdx-screenshot-3.png" 
-    alt="VisualDx Screenshot 3" 
     style={{
       maxWidth: '30%',
       height: 'auto',
@@ -140,7 +132,7 @@ The network doesn't "reason"; it learns statistical associations between pattern
 
 ### Why Neural Networks Are Powerful
 
-Neural networks can capture **nonlinear relationships** between inputs and outputs that simpler models cannot.
+Neural networks can capture **nonlinear relationships and complex interactions** between inputs and outputs that simpler models cannot.
 
 This flexibility allows them to detect subtle patterns in complex data like images.
 
@@ -253,12 +245,20 @@ Even techniques like:
 - Saliency maps
 - Heatmaps
 
+:::success ✋ Hands-on Activity
 
+**Interactive Saliency Map Visualization**
+
+import SaliencyMapReveal from '@site/src/components/widgets/saliency-map-reveal';
+
+<SaliencyMapReveal />
+
+:::
 
 
 <div style={{
-  backgroundColor: '#fef3c7',
-  border: '2px solid #fbbf24',
+  backgroundColor: '#dbeafe',
+  border: '2px solid #3b82f6',
   borderRadius: '8px',
   padding: '1.5rem',
   marginTop: '1.5rem',
@@ -268,13 +268,23 @@ Even techniques like:
   <h4 style={{
     marginTop: 0,
     marginBottom: '1rem',
-    color: '#92400e',
+    color: '#1e40af',
     fontSize: '1.125rem',
     fontWeight: 600,
-    textAlign: 'center'
+    textAlign: 'left'
   }}>
-    STEMI Saliency Map
+    💡 Visualization: STEMI Saliency Map
   </h4>
+  <p style={{
+    marginTop: 0,
+    marginBottom: '1rem',
+    color: '#1e40af',
+    fontSize: '1rem',
+    fontWeight: 500,
+    textAlign: 'left'
+  }}>
+    Which model would you trust the most?
+  </p>
   <img 
     src="/img/stemi-saliency-map.jpg" 
     alt="STEMI Saliency Map" 
@@ -292,7 +302,46 @@ Even techniques like:
 
 ---
 
-## 5. Advantages and Limitations of Neural Networks
+## 5. VisualDx: CNN for Rash Detection
+
+VisualDx demonstrates how CNN-based systems can be applied to clinical image recognition. When a clinician inputs patient characteristics (age, sex, clinical findings) and uploads an image of a skin lesion, the system processes the visual patterns through learned filters and returns a ranked list of possible diagnoses.
+
+The screenshots below illustrate this process: the system analyzes visual patterns in skin lesions to suggest differential diagnoses, similar to how a CNN would process image data through convolutional layers to identify relevant features. This highlights both the practical utility and the importance of understanding the underlying pattern recognition approach—especially given the interpretability challenges discussed earlier.
+
+<div style={{
+  display: 'flex',
+  gap: '1rem',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
+  marginTop: '2rem',
+  marginBottom: '2rem',
+  flexWrap: 'wrap'
+}}>
+  <img 
+    src="/img/visualdx-screenshot-3.png" 
+    alt="VisualDx Screenshot 3" 
+    style={{
+      maxWidth: '48%',
+      height: 'auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}
+  />
+  <img 
+    src="/img/visualdx-screenshot-4.png" 
+    alt="VisualDx Screenshot 4" 
+    style={{
+      maxWidth: '38%',
+      height: 'auto',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    }}
+  />
+</div>
+
+---
+
+## 6. Advantages and Limitations of Neural Networks
 
 ### Assumptions and Requirements of Neural Networks
 
